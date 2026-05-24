@@ -25,21 +25,35 @@ function Cart() {
     [items],
   );
 
-  const loadCart = async () => {
-    setError(null);
-
-    try {
-      const response = await apiClient.get<CartResponse>("/cart");
-      setItems(response.data.cart.items);
-    } catch {
-      setError("Chua the tai gio hang.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    loadCart();
+    let isMounted = true;
+
+    async function loadCart() {
+      try {
+        const response = await apiClient.get<CartResponse>("/cart");
+
+        if (!isMounted) {
+          return;
+        }
+
+        setItems(response.data.cart.items);
+        setError(null);
+      } catch {
+        if (isMounted) {
+          setError("Chua the tai gio hang.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadCart();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const updateQuantity = async (item: CartItem, quantity: number) => {

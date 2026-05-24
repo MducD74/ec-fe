@@ -1,13 +1,18 @@
+import AiRecommendations from "../components/AiRecommendations";
+import HeroBanner from "../components/HeroBanner";
+import StoreServices from "../components/StoreServices";
+import TrendingProducts from "../components/TrendingProducts";
+import VoucherList from "../components/VoucherList";
+
 function Home() {
   return (
-    <section className="py-12">
-      <div className="max-w-2xl">
-        <h1 className="text-4xl font-semibold tracking-normal text-slate-950">ShopAI</h1>
-        <p className="mt-4 text-base leading-7 text-slate-600">
-          Browse products, build a cart, and get smarter recommendations from your interactions.
-        </p>
-      </div>
-    </section>
+    <div className="space-y-14 pb-10 pt-2 sm:space-y-16">
+      <HeroBanner />
+      <StoreServices />
+      <VoucherList />
+      <AiRecommendations />
+      <TrendingProducts />
+    </div>
   );
 }
 

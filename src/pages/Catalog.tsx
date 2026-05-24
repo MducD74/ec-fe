@@ -1,60 +1,62 @@
 import { useEffect, useState } from "react";
+import CategorySidebar from "../components/CategorySidebar";
+import Pagination from "../components/Pagination";
 import ProductCard, { type Product } from "../components/ProductCard";
 import apiClient from "../lib/api-client";
 
 interface ProductsResponse {
+  data?: Product[];
   products?: Product[];
-  recommendations?: Product[];
-  recommended_products?: Product[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 function extractProducts(response: ProductsResponse) {
-  return response.products ?? response.recommendations ?? response.recommended_products ?? [];
+  return response.data ?? response.products ?? [];
 }
 
 function Catalog() {
-  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(true);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit] = useState(12);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-  const [recommendationsError, setRecommendationsError] = useState<string | null>(null);
   const [productsError, setProductsError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
-    async function loadRecommendations() {
-      try {
-        const response = await apiClient.get<ProductsResponse>("/products/recommendations");
-
-        if (!isMounted) {
-          return;
-        }
-
-        setRecommendedProducts(extractProducts(response.data).slice(0, 4));
-      } catch {
-        if (isMounted) {
-          setRecommendationsError("Chua the tai goi y san pham.");
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoadingRecommendations(false);
-        }
-      }
-    }
-
     async function loadProducts() {
+      setIsLoadingProducts(true);
+      setProductsError(null);
+
       try {
-        const response = await apiClient.get<ProductsResponse>("/products");
+        const response = await apiClient.get<ProductsResponse>("/products", {
+          params: {
+            page: currentPage,
+            limit,
+            ...(selectedCategoryId ? { categoryId: selectedCategoryId } : {}),
+          },
+        });
 
         if (!isMounted) {
           return;
         }
+
+        const pagination = response.data.pagination;
 
         setProducts(extractProducts(response.data));
+        setTotalProducts(pagination?.total ?? 0);
+        setTotalPages(pagination?.totalPages ?? 0);
       } catch {
         if (isMounted) {
-          setProductsError("Chua the tai danh sach san pham.");
+          setProductsError("Chưa thể tải danh sách sản phẩm.");
         }
       } finally {
         if (isMounted) {
@@ -63,85 +65,100 @@ function Catalog() {
       }
     }
 
-    loadRecommendations();
     loadProducts();
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [selectedCategoryId, currentPage, limit]);
+
+  const selectCategory = (categoryId: number | null) => {
+    setSelectedCategoryId(categoryId);
+    setCurrentPage(1);
+  };
 
   return (
-    <div className="space-y-12 py-8">
-      <section>
-        <div className="mb-5 flex items-end justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-normal text-slate-950">
-              ✨ Gợi ý cho bạn
-            </h1>
-            <p className="mt-2 text-sm text-slate-600">
-              San pham duoc chon dua tren hanh vi va gio hang cua ban.
-            </p>
-          </div>
-        </div>
-
-        {isLoadingRecommendations && (
-          <p className="text-sm text-slate-500">Dang tai goi y...</p>
-        )}
-
-        {!isLoadingRecommendations && recommendationsError && (
-          <p className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            {recommendationsError}
+    <div className="py-8">
+      <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
+            ShopAI Catalog
           </p>
-        )}
-
-        {!isLoadingRecommendations && !recommendationsError && recommendedProducts.length === 0 && (
-          <p className="rounded-md border border-slate-200 px-4 py-3 text-sm text-slate-600">
-            Chua co goi y phu hop.
-          </p>
-        )}
-
-        {recommendedProducts.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {recommendedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section>
-        <div className="mb-5">
-          <h2 className="text-2xl font-semibold tracking-normal text-slate-950">
+          <h1 className="mt-2 text-3xl font-semibold tracking-normal text-slate-950">
             Tất cả sản phẩm
-          </h2>
-          <p className="mt-2 text-sm text-slate-600">
-            Duyet toan bo danh muc san pham hien co.
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+            Lọc theo danh mục lồng nhau và duyệt sản phẩm với trải nghiệm tối giản, rõ ràng.
           </p>
         </div>
+        <div className="rounded-md border border-slate-100 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm">
+          <span className="font-semibold text-slate-950">{totalProducts}</span> sản phẩm
+        </div>
+      </div>
 
-        {isLoadingProducts && <p className="text-sm text-slate-500">Dang tai san pham...</p>}
+      <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+        <CategorySidebar
+          selectedCategoryId={selectedCategoryId}
+          onSelectCategory={selectCategory}
+        />
 
-        {!isLoadingProducts && productsError && (
-          <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {productsError}
-          </p>
-        )}
-
-        {!isLoadingProducts && !productsError && products.length === 0 && (
-          <p className="rounded-md border border-slate-200 px-4 py-3 text-sm text-slate-600">
-            Chua co san pham nao.
-          </p>
-        )}
-
-        {products.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+        <section className="min-w-0 space-y-5">
+          <div className="flex flex-col justify-between gap-3 rounded-lg border border-slate-100 bg-white px-5 py-4 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:flex-row sm:items-center">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-950">Danh sách sản phẩm</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Trang {currentPage} với {limit} sản phẩm mỗi trang
+              </p>
+            </div>
+            {selectedCategoryId && (
+              <button
+                type="button"
+                className="inline-flex h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-950 hover:text-slate-950"
+                onClick={() => selectCategory(null)}
+              >
+                Xóa bộ lọc
+              </button>
+            )}
           </div>
-        )}
-      </section>
+
+          {isLoadingProducts && (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: limit }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-72 animate-pulse rounded-md border border-slate-100 bg-slate-50"
+                />
+              ))}
+            </div>
+          )}
+
+          {!isLoadingProducts && productsError && (
+            <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {productsError}
+            </p>
+          )}
+
+          {!isLoadingProducts && !productsError && products.length === 0 && (
+            <p className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+              Chưa có sản phẩm nào trong danh mục này.
+            </p>
+          )}
+
+          {!isLoadingProducts && products.length > 0 && (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </section>
+      </div>
     </div>
   );
 }

@@ -1,12 +1,20 @@
 import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import apiClient from "../lib/api-client";
 
 export interface Product {
   id: number;
   name: string;
   description?: string | null;
+  specifications?: Record<string, string | number | boolean | null> | null;
   price: string | number;
   sku?: string;
+  imageUrl?: string | null;
+  category?: {
+    id: number;
+    name: string;
+  } | null;
   inventory?: Array<{
     id: number;
     status?: string;
@@ -42,13 +50,26 @@ function getAvailableCount(product: Product) {
 function ProductCard({ product }: ProductCardProps) {
   const availableCount = getAvailableCount(product);
 
+  const handleAddToCart = async () => {
+    try {
+      await apiClient.post("/cart/items", {
+        productId: product.id,
+        quantity: 1,
+      });
+
+      toast.success("Đã thêm vào giỏ hàng!");
+    } catch {
+      toast.error("Không thể thêm vào giỏ hàng.");
+    }
+  };
+
   return (
     <article className="overflow-hidden rounded-md border border-slate-200 bg-white transition-shadow hover:shadow-sm">
       <Link
         to={`/catalog/${product.id}`}
         className="flex aspect-[4/3] items-center justify-center bg-slate-100 text-sm font-medium text-slate-500"
       >
-        {product.sku ?? `SP-${product.id}`}
+        <img src={product.imageUrl || "/placeholder.jpg"} alt={product.name} className="object-cover" />
       </Link>
 
       <div className="space-y-3 p-4">
@@ -78,6 +99,7 @@ function ProductCard({ product }: ProductCardProps) {
             className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-950 text-white transition-colors hover:bg-slate-800"
             aria-label={`Them ${product.name} vao gio hang`}
             title="Them vao gio"
+            onClick={handleAddToCart}
           >
             <ShoppingCart className="h-4 w-4" />
           </button>
