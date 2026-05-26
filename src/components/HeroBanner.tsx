@@ -12,7 +12,7 @@ function HeroBanner() {
         <div className="max-w-xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
             <ShoppingBag className="h-3.5 w-3.5" />
-            ShopAI Premium
+            DUT Shop cao cấp
           </div>
 
           <h1 className="mt-6 text-4xl font-semibold tracking-normal text-slate-950 sm:text-5xl lg:text-6xl">
@@ -38,7 +38,7 @@ function HeroBanner() {
           <div className="aspect-[4/3] overflow-hidden rounded-lg border border-white bg-white shadow-2xl shadow-slate-200">
             <img
               src={heroImage}
-              alt="Bộ sưu tập sản phẩm ShopAI"
+              alt="Bộ sưu tập sản phẩm"
               className="h-full w-full object-cover"
             />
           </div>

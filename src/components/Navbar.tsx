@@ -69,15 +69,15 @@ function Navbar() {
     <header className="border-b border-slate-200 bg-white">
       <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" className="text-lg font-semibold tracking-normal text-slate-950">
-          ShopAI
+          DUT Shop
         </Link>
 
         <div className="hidden items-center gap-6 sm:flex">
           <NavLink to="/" className={navLinkClass}>
-            Home
+            Trang chủ
           </NavLink>
           <NavLink to="/catalog" className={navLinkClass}>
-            Catalog
+            Danh mục
           </NavLink>
         </div>
 
@@ -85,8 +85,8 @@ function Navbar() {
           <Link
             to="/cart"
             className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-700 transition-colors hover:bg-slate-50"
-            aria-label="Cart"
-            title="Cart"
+            aria-label="Giỏ hàng"
+            title="Giỏ hàng"
           >
             <ShoppingCart className="h-5 w-5" />
           </Link>
@@ -97,7 +97,7 @@ function Navbar() {
                 type="button"
                 onClick={() => setIsProfileMenuOpen((isOpen) => !isOpen)}
                 className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-700 transition-colors hover:bg-slate-50"
-                aria-label="Profile menu"
+                aria-label="Menu tài khoản"
                 aria-expanded={isProfileMenuOpen}
               >
                 <User className="h-5 w-5" />

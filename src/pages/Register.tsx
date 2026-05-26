@@ -7,9 +7,9 @@ import apiClient from "../lib/api-client";
 import { ToastHelper } from "../lib/toast-helper";
 
 const registerSchema = z.object({
-  name: z.string().min(2, "Ten phai co it nhat 2 ky tu"),
-  email: z.email("Email khong hop le"),
-  password: z.string().min(6, "Mat khau phai co it nhat 6 ky tu"),
+  name: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
+  email: z.email("Email không hợp lệ"),
+  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -20,10 +20,10 @@ interface AuthResponse {
 
 function getErrorMessage(error: unknown) {
   if (axios.isAxiosError<{ message?: string }>(error)) {
-    return error.response?.data?.message ?? "Dang ky that bai";
+    return error.response?.data?.message ?? "Đăng ký thất bại";
   }
 
-  return "Dang ky that bai";
+  return "Đăng ký thất bại";
 }
 
 function Register() {
@@ -47,7 +47,7 @@ function Register() {
 
       window.localStorage.setItem("access_token", response.data.token);
       window.dispatchEvent(new Event("auth-token-changed"));
-      ToastHelper.success("Dang ky thanh cong");
+      ToastHelper.success("Đăng ký thành công");
       navigate("/");
     } catch (error) {
       ToastHelper.error(getErrorMessage(error));
@@ -57,16 +57,16 @@ function Register() {
   return (
     <section className="mx-auto max-w-md py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-normal text-slate-950">Dang ky</h1>
+        <h1 className="text-2xl font-semibold tracking-normal text-slate-950">Đăng ký</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Tao tai khoan de luu gio hang va nhan goi y phu hop hon.
+          Tạo tài khoản để lưu giỏ hàng và nhận gợi ý phù hợp hơn.
         </p>
       </div>
 
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="name">
-            Ho ten
+            Họ tên
           </label>
           <input
             id="name"
@@ -98,7 +98,7 @@ function Register() {
 
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="password">
-            Mat khau
+            Mật khẩu
           </label>
           <input
             id="password"
@@ -117,14 +117,14 @@ function Register() {
           disabled={isSubmitting}
           className="h-11 w-full rounded-md bg-slate-950 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
         >
-          {isSubmitting ? "Dang xu ly..." : "Dang ky"}
+          {isSubmitting ? "Đang xử lý..." : "Đăng ký"}
         </button>
       </form>
 
       <p className="mt-4 text-center text-sm text-slate-600">
-        Da co tai khoan?{" "}
+        Đã có tài khoản?{" "}
         <Link className="font-medium text-slate-950 hover:underline" to="/login">
-          Dang nhap
+          Đăng nhập
         </Link>
       </p>
     </section>

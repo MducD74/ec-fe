@@ -7,6 +7,8 @@ import apiClient from "../lib/api-client";
 interface ProductsResponse {
   data?: Product[];
   products?: Product[];
+  recommendations?: Product[];
+  recommended_products?: Product[];
   pagination?: {
     total: number;
     page: number;
@@ -16,18 +18,50 @@ interface ProductsResponse {
 }
 
 function extractProducts(response: ProductsResponse) {
-  return response.data ?? response.products ?? [];
+  return response.data ?? response.products ?? response.recommendations ?? response.recommended_products ?? [];
 }
 
 function Catalog() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(12);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [isRecommendLoading, setIsRecommendLoading] = useState(true);
   const [productsError, setProductsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadRecommendations() {
+      setIsRecommendLoading(true);
+
+      try {
+        const response = await apiClient.get<ProductsResponse>("/products/recommendations");
+
+        if (isMounted) {
+          setRecommendedProducts(extractProducts(response.data));
+        }
+      } catch {
+        if (isMounted) {
+          setRecommendedProducts([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsRecommendLoading(false);
+        }
+      }
+    }
+
+    loadRecommendations();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -82,7 +116,7 @@ function Catalog() {
       <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
-            ShopAI Catalog
+            Danh mục DUT Shop
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-normal text-slate-950">
             Tất cả sản phẩm
@@ -95,6 +129,36 @@ function Catalog() {
           <span className="font-semibold text-slate-950">{totalProducts}</span> sản phẩm
         </div>
       </div>
+
+      {(isRecommendLoading || recommendedProducts.length > 0) && (
+        <section className="mb-8 rounded-lg border border-slate-100 bg-white px-5 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
+          <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
+                Mua sắm AI
+              </p>
+              <h2 className="mt-2 text-2xl font-bold tracking-normal text-slate-950">
+                ✨ Gợi ý dành riêng cho bạn
+              </h2>
+            </div>
+          </div>
+
+          <div className="hide-scrollbar flex snap-x gap-4 overflow-x-auto pb-2">
+            {isRecommendLoading
+              ? Array.from({ length: 4 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="h-72 w-[240px] shrink-0 snap-start animate-pulse rounded-md border border-slate-100 bg-slate-50 sm:w-[260px]"
+                  />
+                ))
+              : recommendedProducts.map((product) => (
+                  <div key={product.id} className="w-[240px] shrink-0 snap-start sm:w-[260px]">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+          </div>
+        </section>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
         <CategorySidebar

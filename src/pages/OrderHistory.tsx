@@ -1,6 +1,7 @@
 import { ChevronDown, PackageSearch, ShoppingBag } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import apiClient from "../lib/api-client";
 
 interface OrderProduct {
@@ -69,6 +70,7 @@ function OrderHistory() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
+  const [completingOrderId, setCompletingOrderId] = useState<number | null>(null);
   const [pagination, setPagination] = useState({
     total: 0,
     page: 1,
@@ -77,42 +79,46 @@ function OrderHistory() {
 
   const hasOrders = useMemo(() => orders.length > 0, [orders]);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadOrderHistory() {
-      try {
-        const response = await apiClient.get<OrderHistoryResponse>("/orders/history", {
-          params: {
-            page: 1,
-            limit: 10,
-          },
-        });
-
-        if (!isMounted) {
-          return;
-        }
-
-        setOrders(response.data.data);
-        setPagination(response.data.pagination);
-        setError(null);
-      } catch {
-        if (isMounted) {
-          setError("Chưa thể tải lịch sử đơn hàng.");
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
+  const fetchOrderHistory = useCallback(async (showLoading = true) => {
+    if (showLoading) {
+      setIsLoading(true);
     }
 
-    void loadOrderHistory();
+    try {
+      const response = await apiClient.get<OrderHistoryResponse>("/orders/history", {
+        params: {
+          page: 1,
+          limit: 10,
+        },
+      });
 
-    return () => {
-      isMounted = false;
-    };
+      setOrders(response.data.data);
+      setPagination(response.data.pagination);
+      setError(null);
+    } catch {
+      setError("Chưa thể tải lịch sử đơn hàng.");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    void fetchOrderHistory();
+  }, [fetchOrderHistory]);
+
+  const handleCompleteOrder = async (orderId: number) => {
+    setCompletingOrderId(orderId);
+
+    try {
+      await apiClient.put(`/orders/${orderId}/complete`);
+      toast.success("Cảm ơn bạn đã mua hàng!");
+      await fetchOrderHistory(false);
+    } catch {
+      toast.error("Không thể xác nhận đơn hàng.");
+    } finally {
+      setCompletingOrderId(null);
+    }
+  };
 
   return (
     <section className="py-8">
@@ -168,6 +174,8 @@ function OrderHistory() {
         <div className="space-y-3">
           {orders.map((order) => {
             const isExpanded = expandedOrderId === order.id;
+            const canComplete = order.status === "PROCESSING";
+            const isCompleting = completingOrderId === order.id;
             const statusClass =
               statusClassByValue[order.status] ?? "bg-slate-50 text-slate-700 ring-slate-100";
 
@@ -176,8 +184,7 @@ function OrderHistory() {
                 key={order.id}
                 className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
               >
-                <button
-                  type="button"
+                <div
                   onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
                   className="flex w-full flex-col gap-4 px-5 py-4 text-left transition-colors hover:bg-slate-50 sm:flex-row sm:items-center sm:justify-between"
                 >
@@ -209,13 +216,26 @@ function OrderHistory() {
                     >
                       {order.status}
                     </span>
+                    {canComplete && (
+                      <button
+                        type="button"
+                        className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                        disabled={isCompleting}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          void handleCompleteOrder(order.id);
+                        }}
+                      >
+                        {isCompleting ? "Đang xác nhận..." : "Xác nhận đã nhận hàng"}
+                      </button>
+                    )}
                     <ChevronDown
                       className={`h-5 w-5 text-slate-400 transition-transform ${
                         isExpanded ? "rotate-180" : ""
                       }`}
                     />
                   </div>
-                </button>
+                </div>
 
                 {isExpanded && (
                   <div className="border-t border-slate-200 bg-white px-5 py-4">

@@ -64,7 +64,7 @@ function CartItemCard({
             onClick={() => onDecrease(item)}
             disabled={isUpdating}
             className="inline-flex h-9 w-9 items-center justify-center text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300"
-            aria-label="Giam so luong"
+            aria-label="Giảm số lượng"
           >
             <Minus className="h-4 w-4" />
           </button>
@@ -76,7 +76,7 @@ function CartItemCard({
             onClick={() => onIncrease(item)}
             disabled={isUpdating}
             className="inline-flex h-9 w-9 items-center justify-center text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300"
-            aria-label="Tang so luong"
+            aria-label="Tăng số lượng"
           >
             <Plus className="h-4 w-4" />
           </button>
@@ -91,7 +91,7 @@ function CartItemCard({
             className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-red-600 transition-colors hover:text-red-700 disabled:cursor-not-allowed disabled:text-red-300"
           >
             <Trash2 className="h-3.5 w-3.5" />
-            Xoa
+            Xóa
           </button>
         </div>
       </div>

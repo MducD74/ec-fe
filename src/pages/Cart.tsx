@@ -40,7 +40,7 @@ function Cart() {
         setError(null);
       } catch {
         if (isMounted) {
-          setError("Chua the tai gio hang.");
+          setError("Chưa thể tải giỏ hàng.");
         }
       } finally {
         if (isMounted) {
@@ -65,7 +65,7 @@ function Cart() {
       });
       setItems(response.data.cart.items);
     } catch {
-      ToastHelper.error("Cap nhat gio hang that bai");
+      ToastHelper.error("Cập nhật giỏ hàng thất bại.");
     } finally {
       setUpdatingProductId(null);
     }
@@ -78,7 +78,7 @@ function Cart() {
       const response = await apiClient.delete<CartResponse>(`/cart/items/${item.productId}`);
       setItems(response.data.cart.items);
     } catch {
-      ToastHelper.error("Xoa san pham that bai");
+      ToastHelper.error("Xóa sản phẩm thất bại.");
     } finally {
       setUpdatingProductId(null);
     }
@@ -100,13 +100,13 @@ function Cart() {
   return (
     <section className="py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-normal text-slate-950">Gio hang</h1>
+        <h1 className="text-2xl font-semibold tracking-normal text-slate-950">Giỏ hàng</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Kiem tra san pham va so luong truoc khi thanh toan.
+          Kiểm tra sản phẩm và số lượng trước khi thanh toán.
         </p>
       </div>
 
-      {isLoading && <p className="text-sm text-slate-500">Dang tai gio hang...</p>}
+      {isLoading && <p className="text-sm text-slate-500">Đang tải giỏ hàng...</p>}
 
       {!isLoading && error && (
         <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -116,12 +116,12 @@ function Cart() {
 
       {!isLoading && !error && items.length === 0 && (
         <div className="rounded-md border border-slate-200 px-4 py-8 text-center">
-          <p className="text-sm text-slate-600">Gio hang dang trong.</p>
+          <p className="text-sm text-slate-600">Giỏ hàng đang trống.</p>
           <Link
             to="/catalog"
             className="mt-4 inline-flex h-10 items-center rounded-md bg-slate-950 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-800"
           >
-            Xem san pham
+            Xem sản phẩm
           </Link>
         </div>
       )}
@@ -142,9 +142,9 @@ function Cart() {
           </div>
 
           <aside className="h-fit rounded-md border border-slate-200 bg-white p-4">
-            <h2 className="text-base font-semibold text-slate-950">Tong ket</h2>
+            <h2 className="text-base font-semibold text-slate-950">Tổng kết</h2>
             <div className="mt-4 flex items-center justify-between text-sm">
-              <span className="text-slate-600">Tam tinh</span>
+              <span className="text-slate-600">Tạm tính</span>
               <span className="font-semibold text-slate-950">
                 {new Intl.NumberFormat("vi-VN", {
                   style: "currency",
@@ -157,7 +157,7 @@ function Cart() {
               to="/checkout"
               className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-md bg-slate-950 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-800"
             >
-              Chuyen sang Checkout
+              Chuyển sang thanh toán
             </Link>
           </aside>
         </div>

@@ -90,15 +90,15 @@ function ProductCard({ product }: ProductCardProps) {
               {formatPrice(product.price)}
             </p>
             {typeof availableCount === "number" && (
-              <p className="mt-1 text-xs text-slate-500">Con lai {availableCount}</p>
+              <p className="mt-1 text-xs text-slate-500">Còn lại {availableCount}</p>
             )}
           </div>
 
           <button
             type="button"
             className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-950 text-white transition-colors hover:bg-slate-800"
-            aria-label={`Them ${product.name} vao gio hang`}
-            title="Them vao gio"
+            aria-label={`Thêm ${product.name} vào giỏ hàng`}
+            title="Thêm vào giỏ"
             onClick={handleAddToCart}
           >
             <ShoppingCart className="h-4 w-4" />

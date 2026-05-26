@@ -7,8 +7,8 @@ import apiClient from "../lib/api-client";
 import { ToastHelper } from "../lib/toast-helper";
 
 const loginSchema = z.object({
-  email: z.email("Email khong hop le"),
-  password: z.string().min(6, "Mat khau phai co it nhat 6 ky tu"),
+  email: z.email("Email không hợp lệ"),
+  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -19,10 +19,10 @@ interface AuthResponse {
 
 function getErrorMessage(error: unknown) {
   if (axios.isAxiosError<{ message?: string }>(error)) {
-    return error.response?.data?.message ?? "Dang nhap that bai";
+    return error.response?.data?.message ?? "Đăng nhập thất bại";
   }
 
-  return "Dang nhap that bai";
+  return "Đăng nhập thất bại";
 }
 
 function Login() {
@@ -45,7 +45,7 @@ function Login() {
 
       window.localStorage.setItem("access_token", response.data.token);
       window.dispatchEvent(new Event("auth-token-changed"));
-      ToastHelper.success("Dang nhap thanh cong");
+      ToastHelper.success("Đăng nhập thành công");
       navigate("/");
     } catch (error) {
       ToastHelper.error(getErrorMessage(error));
@@ -55,9 +55,9 @@ function Login() {
   return (
     <section className="mx-auto max-w-md py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-normal text-slate-950">Dang nhap</h1>
+        <h1 className="text-2xl font-semibold tracking-normal text-slate-950">Đăng nhập</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Nhap thong tin tai khoan de tiep tuc mua sam.
+          Nhập thông tin tài khoản để tiếp tục mua sắm.
         </p>
       </div>
 
@@ -80,7 +80,7 @@ function Login() {
 
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="password">
-            Mat khau
+            Mật khẩu
           </label>
           <input
             id="password"
@@ -99,14 +99,14 @@ function Login() {
           disabled={isSubmitting}
           className="h-11 w-full rounded-md bg-slate-950 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
         >
-          {isSubmitting ? "Dang xu ly..." : "Dang nhap"}
+          {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
         </button>
       </form>
 
       <p className="mt-4 text-center text-sm text-slate-600">
-        Chua co tai khoan?{" "}
+        Chưa có tài khoản?{" "}
         <Link className="font-medium text-slate-950 hover:underline" to="/register">
-          Dang ky
+          Đăng ký
         </Link>
       </p>
     </section>

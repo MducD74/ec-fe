@@ -27,6 +27,25 @@ interface ProductsResponse {
   recommended_products?: Product[];
 }
 
+interface RecommendedVoucher {
+  id: number;
+  code: string;
+  discount_type?: "PERCENTAGE" | "FIXED_AMOUNT";
+  discountType?: "PERCENTAGE" | "FIXED_AMOUNT";
+  discount_value?: number;
+  discountValue?: number;
+  min_order_value?: number;
+  minOrderValue?: number;
+  is_upsell?: boolean;
+  isUpsell?: boolean;
+}
+
+interface RecommendedVouchersResponse {
+  data?: RecommendedVoucher[];
+  vouchers?: RecommendedVoucher[];
+  recommended_vouchers?: RecommendedVoucher[];
+}
+
 function formatPrice(price: string | number) {
   const numericPrice = Number(price);
 
@@ -47,6 +66,10 @@ function getProduct(response: ProductDetailResponse) {
 
 function getProducts(response: ProductsResponse) {
   return response.data ?? response.products ?? response.recommendations ?? response.recommended_products ?? [];
+}
+
+function getRecommendedVouchers(response: RecommendedVouchersResponse) {
+  return response.recommended_vouchers ?? response.data ?? response.vouchers ?? [];
 }
 
 function getAvailableCount(product: Product) {
@@ -115,6 +138,33 @@ function ImageGallery({ product }: { product: Product }) {
 
 function ProductInfo({ product }: { product: Product }) {
   const availableCount = getAvailableCount(product);
+  const [recommendedVouchers, setRecommendedVouchers] = useState<RecommendedVoucher[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadRecommendedVouchers() {
+      try {
+        const response = await apiClient.get<RecommendedVouchersResponse>(
+          `/vouchers/recommend/${product.id}`,
+        );
+
+        if (isMounted) {
+          setRecommendedVouchers(getRecommendedVouchers(response.data).slice(0, 3));
+        }
+      } catch {
+        if (isMounted) {
+          setRecommendedVouchers([]);
+        }
+      }
+    }
+
+    void loadRecommendedVouchers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [product.id]);
 
   const handleAddToCart = async () => {
     try {
@@ -123,10 +173,41 @@ function ProductInfo({ product }: { product: Product }) {
         quantity: 1,
       });
 
-      toast.success("Da them vao gio hang!");
+      toast.success("Đã thêm vào giỏ hàng!");
     } catch {
-      toast.error("Khong the them vao gio hang.");
+      toast.error("Không thể thêm vào giỏ hàng.");
     }
+  };
+
+  const handleCopyCode = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      toast.success("Đã sao chép mã giảm giá!");
+    } catch {
+      toast.error("Không thể sao chép mã giảm giá.");
+    }
+  };
+
+  const getVoucherDiscountText = (voucher: RecommendedVoucher) => {
+    const discountType = voucher.discount_type ?? voucher.discountType;
+    const discountValue = voucher.discount_value ?? voucher.discountValue ?? 0;
+
+    if (discountType === "PERCENTAGE") {
+      return `-${discountValue}%`;
+    }
+
+    return `-${formatPrice(discountValue)}`;
+  };
+
+  const getUpsellAmount = (voucher: RecommendedVoucher) => {
+    const minOrderValue = voucher.min_order_value ?? voucher.minOrderValue ?? 0;
+    const productPrice = Number(product.price);
+
+    if (!Number.isFinite(productPrice)) {
+      return 0;
+    }
+
+    return Math.max(minOrderValue - productPrice, 0);
   };
 
   return (
@@ -154,15 +235,45 @@ function ProductInfo({ product }: { product: Product }) {
         {formatPrice(product.price)}
       </p>
 
+      {recommendedVouchers.length > 0 && (
+        <div className="mt-4 rounded-lg border border-orange-100 bg-orange-50/50 px-4 py-3">
+          <p className="text-sm font-bold text-slate-950">Mã giảm giá cực hời</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {recommendedVouchers.map((voucher) => {
+              const isUpsell = Boolean(voucher.is_upsell ?? voucher.isUpsell);
+              const upsellAmount = getUpsellAmount(voucher);
+
+              return (
+                <button
+                  key={voucher.id}
+                  type="button"
+                  onClick={() => handleCopyCode(voucher.code)}
+                  className="rounded-full bg-gradient-to-r from-orange-100 to-rose-100 px-3 py-2 text-left text-sm font-bold text-rose-700 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow"
+                  title="Bấm để sao chép mã"
+                >
+                  <span>{voucher.code}</span>
+                  <span className="ml-2 text-rose-900">{getVoucherDiscountText(voucher)}</span>
+                  {isUpsell && upsellAmount > 0 && (
+                    <span className="mt-1 block text-xs font-semibold text-red-600">
+                      Mua thêm {formatPrice(upsellAmount)} để áp dụng
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <div className="flex items-center gap-3 rounded-md border border-slate-100 bg-slate-50 px-4 py-3">
           <PackageCheck className="h-5 w-5 text-slate-950" />
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
-              Tinh trang kho
+              Tình trạng kho
             </p>
             <p className="text-sm font-semibold text-slate-950">
-              {typeof availableCount === "number" ? `Con ${availableCount} san pham` : "San sang giao"}
+              {typeof availableCount === "number" ? `Còn ${availableCount} sản phẩm` : "Sẵn sàng giao"}
             </p>
           </div>
         </div>
@@ -170,9 +281,9 @@ function ProductInfo({ product }: { product: Product }) {
           <ShieldCheck className="h-5 w-5 text-slate-950" />
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
-              Bao hanh
+              Bảo hành
             </p>
-            <p className="text-sm font-semibold text-slate-950">Chinh hang 12 thang</p>
+            <p className="text-sm font-semibold text-slate-950">Chính hãng 12 tháng</p>
           </div>
         </div>
       </div>
@@ -183,7 +294,7 @@ function ProductInfo({ product }: { product: Product }) {
         onClick={handleAddToCart}
       >
         <ShoppingCart className="h-4 w-4" />
-        Them vao gio hang
+        Thêm vào giỏ hàng
       </button>
 
       <div className="mt-5 grid gap-3 text-sm text-slate-600 sm:grid-cols-3">
@@ -193,11 +304,11 @@ function ProductInfo({ product }: { product: Product }) {
         </div>
         <div className="flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 text-slate-950" />
-          Doi tra 7 ngay
+          Đổi trả 7 ngày
         </div>
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-slate-950" />
-          Goi y boi AI
+          Gợi ý bởi AI
         </div>
       </div>
     </section>
@@ -215,17 +326,17 @@ function SpecificationTable({ specifications }: { specifications?: Product["spec
         </div>
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
-            Chi tiet
+            Chi tiết
           </p>
           <h2 className="text-2xl font-semibold tracking-normal text-slate-950">
-            Thong so ky thuat
+            Thông số kỹ thuật
           </h2>
         </div>
       </div>
 
       {entries.length === 0 ? (
         <p className="rounded-md border border-slate-100 px-4 py-3 text-sm text-slate-500">
-          Chua co thong so ky thuat cho san pham nay.
+          Chưa có thông số kỹ thuật cho sản phẩm này.
         </p>
       ) : (
         <div className="overflow-hidden rounded-md border border-slate-100">
@@ -250,9 +361,9 @@ function SpecificationTable({ specifications }: { specifications?: Product["spec
 function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
-  const [recommendations, setRecommendations] = useState<Product[]>([]);
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
   const [isLoadingProduct, setIsLoadingProduct] = useState(true);
-  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(true);
+  const [isLoadingSimilarProducts, setIsLoadingSimilarProducts] = useState(true);
   const [productError, setProductError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -264,13 +375,25 @@ function ProductDetail() {
 
       try {
         const response = await apiClient.get<ProductDetailResponse>(`/products/${id}`);
+        const loadedProduct = getProduct(response.data);
 
         if (isMounted) {
-          setProduct(getProduct(response.data));
+          setProduct(loadedProduct);
+        }
+
+        if (loadedProduct) {
+          try {
+            await apiClient.post("/interactions", {
+              productId: loadedProduct.id,
+              actionType: "VIEW",
+            });
+          } catch (error) {
+            console.warn("Unable to log product view interaction:", error);
+          }
         }
       } catch {
         if (isMounted) {
-          setProductError("Khong the tai thong tin san pham.");
+          setProductError("Không thể tải thông tin sản phẩm.");
         }
       } finally {
         if (isMounted) {
@@ -291,30 +414,36 @@ function ProductDetail() {
   useEffect(() => {
     let isMounted = true;
 
-    async function loadRecommendations() {
+    async function loadSimilarProducts() {
+      setIsLoadingSimilarProducts(true);
+      setSimilarProducts([]);
+
       try {
-        const response = await apiClient.get<ProductsResponse>("/products/recommendations");
+        const response = await apiClient.get<ProductsResponse>(`/products/similar/${id}`);
+        const currentProductId = Number(id);
 
         if (isMounted) {
-          setRecommendations(getProducts(response.data).filter((item) => item.id !== product?.id).slice(0, 4));
+          setSimilarProducts(getProducts(response.data).filter((item) => item.id !== currentProductId).slice(0, 5));
         }
       } catch {
         if (isMounted) {
-          setRecommendations([]);
+          setSimilarProducts([]);
         }
       } finally {
         if (isMounted) {
-          setIsLoadingRecommendations(false);
+          setIsLoadingSimilarProducts(false);
         }
       }
     }
 
-    void loadRecommendations();
+    if (id) {
+      void loadSimilarProducts();
+    }
 
     return () => {
       isMounted = false;
     };
-  }, [product?.id]);
+  }, [id]);
 
   if (isLoadingProduct) {
     return (
@@ -333,10 +462,10 @@ function ProductDetail() {
       <section className="py-8">
         <Link to="/catalog" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600">
           <ArrowLeft className="h-4 w-4" />
-          Quay lai danh muc
+          Quay lại danh mục
         </Link>
         <p className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {productError ?? "Khong tim thay san pham."}
+          {productError ?? "Không tìm thấy sản phẩm."}
         </p>
       </section>
     );
@@ -349,7 +478,7 @@ function ProductDetail() {
         className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-slate-950"
       >
         <ArrowLeft className="h-4 w-4" />
-        Quay lai danh muc
+        Quay lại danh mục
       </Link>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-start">
@@ -363,15 +492,15 @@ function ProductDetail() {
         <div className="mb-5 flex items-end justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
-              AI Shopping
+              Mua sắm AI
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-normal text-slate-950">
-              San pham tuong tu
+              Sản phẩm tương tự
             </h2>
           </div>
         </div>
 
-        {isLoadingRecommendations && (
+        {isLoadingSimilarProducts && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, index) => (
               <div key={index} className="h-72 animate-pulse rounded-md border border-slate-100 bg-slate-50" />
@@ -379,16 +508,16 @@ function ProductDetail() {
           </div>
         )}
 
-        {!isLoadingRecommendations && recommendations.length === 0 && (
+        {!isLoadingSimilarProducts && similarProducts.length === 0 && (
           <p className="rounded-md border border-slate-100 bg-white px-4 py-3 text-sm text-slate-500">
-            Chua co goi y phu hop.
+            Chưa có gợi ý phù hợp.
           </p>
         )}
 
-        {recommendations.length > 0 && (
+        {similarProducts.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {recommendations.map((recommendedProduct) => (
-              <ProductCard key={recommendedProduct.id} product={recommendedProduct} />
+            {similarProducts.map((similarProduct) => (
+              <ProductCard key={similarProduct.id} product={similarProduct} />
             ))}
           </div>
         )}
