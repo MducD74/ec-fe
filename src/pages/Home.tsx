@@ -48,7 +48,7 @@ function Home() {
     try {
       await navigator.clipboard.writeText(code);
       setCopiedCode(code);
-      toast.success("Đã lưu mã giảm giá!");
+      toast.success("Đã sao chép mã giảm giá thành công!");
 
       window.setTimeout(() => {
         setCopiedCode((currentCode) => (currentCode === code ? null : currentCode));

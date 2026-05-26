@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Ticket, X } from "lucide-react";
+import { type UIEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Search, Ticket, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { CartItem } from "../components/CartItemCard";
 import apiClient from "../lib/api-client";
@@ -52,6 +52,9 @@ interface Voucher {
 interface VouchersResponse {
   data?: Voucher[];
   vouchers?: Voucher[];
+  pagination?: {
+    hasMore?: boolean;
+  };
 }
 
 const initialShippingAddress: ShippingAddress = {
@@ -62,6 +65,8 @@ const initialShippingAddress: ShippingAddress = {
   district: "",
   city: "",
 };
+
+const extractVouchers = (response: VouchersResponse) => response.data ?? response.vouchers ?? [];
 
 async function logPurchaseInteractions(items: CheckoutOrderItem[]) {
   try {
@@ -87,11 +92,16 @@ function Checkout() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoadingCart, setIsLoadingCart] = useState(true);
   const [shippingAddress, setShippingAddress] = useState(initialShippingAddress);
-  const [vouchers, setVouchers] = useState<Voucher[]>([]);
+  const [vouchersList, setVouchersList] = useState<Voucher[]>([]);
+  const [voucherSearch, setVoucherSearch] = useState("");
+  const [debouncedVoucherSearch, setDebouncedVoucherSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [voucherCode, setVoucherCode] = useState("");
   const [appliedVoucherCode, setAppliedVoucherCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
   const [voucherError, setVoucherError] = useState<string | null>(null);
+  const voucherRequestId = useRef(0);
 
   const subtotal = useMemo(
     () =>
@@ -168,26 +178,92 @@ function Checkout() {
     return `Giảm ${formatCurrency(voucher.discountValue)}`;
   };
 
-  const extractVouchers = (response: VouchersResponse) => response.data ?? response.vouchers ?? [];
-
-  const loadVouchers = async () => {
+  const loadMoreVouchers = useCallback(async (nextPage: number, searchText: string) => {
+    const requestId = voucherRequestId.current + 1;
+    voucherRequestId.current = requestId;
     setIsLoadingVouchers(true);
 
     try {
-      const response = await apiClient.get<VouchersResponse>("/vouchers");
-      setVouchers(extractVouchers(response.data));
+      const response = await apiClient.get<VouchersResponse>("/vouchers", {
+        params: {
+          search: searchText,
+          page: nextPage,
+          limit: 5,
+        },
+      });
+      const nextVouchers = extractVouchers(response.data);
+
+      if (requestId !== voucherRequestId.current) {
+        return;
+      }
+
+      setVouchersList((currentVouchers) => {
+        if (nextPage === 1) {
+          return nextVouchers;
+        }
+
+        const existingIds = new Set(currentVouchers.map((voucher) => voucher.id));
+        return [
+          ...currentVouchers,
+          ...nextVouchers.filter((voucher) => !existingIds.has(voucher.id)),
+        ];
+      });
+      setHasMore(Boolean(response.data.pagination?.hasMore));
     } catch {
-      setVouchers([]);
+      if (requestId !== voucherRequestId.current) {
+        return;
+      }
+
+      if (nextPage === 1) {
+        setVouchersList([]);
+      }
+      setHasMore(false);
     } finally {
-      setIsLoadingVouchers(false);
+      if (requestId === voucherRequestId.current) {
+        setIsLoadingVouchers(false);
+      }
     }
+  }, []);
+
+  useEffect(() => {
+    const debounceTimer = window.setTimeout(() => {
+      setDebouncedVoucherSearch(voucherSearch.trim());
+    }, 300);
+
+    return () => {
+      window.clearTimeout(debounceTimer);
+    };
+  }, [voucherSearch]);
+
+  useEffect(() => {
+    if (!isVoucherModalOpen) {
+      return;
+    }
+
+    setVouchersList([]);
+    setPage(1);
+    setHasMore(true);
+    void loadMoreVouchers(1, debouncedVoucherSearch);
+  }, [debouncedVoucherSearch, isVoucherModalOpen, loadMoreVouchers]);
+
+  useEffect(() => {
+    if (!isVoucherModalOpen || page === 1) {
+      return;
+    }
+
+    void loadMoreVouchers(page, debouncedVoucherSearch);
+  }, [debouncedVoucherSearch, isVoucherModalOpen, loadMoreVouchers, page]);
+
+  const openVoucherModal = () => {
+    setIsVoucherModalOpen(true);
   };
 
-  const openVoucherModal = async () => {
-    setIsVoucherModalOpen(true);
+  const handleVouchersScroll = (event: UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget;
+    const isNearBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 48;
 
-    if (vouchers.length === 0) {
-      await loadVouchers();
+    if (isNearBottom && hasMore && !isLoadingVouchers) {
+      setPage((currentPage) => currentPage + 1);
     }
   };
 
@@ -469,8 +545,21 @@ function Checkout() {
               </button>
             </div>
 
-            <div className="max-h-[64vh] space-y-3 overflow-y-auto px-5 py-5">
-              {isLoadingVouchers && (
+            <div className="border-b border-slate-100 px-5 py-4">
+              <label className="relative block">
+                <span className="sr-only">Tìm kiếm mã giảm giá</span>
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  value={voucherSearch}
+                  onChange={(event) => setVoucherSearch(event.target.value)}
+                  placeholder="Tìm kiếm mã giảm giá..."
+                  className="h-11 w-full rounded-md border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-slate-950"
+                />
+              </label>
+            </div>
+
+            <div className="max-h-[56vh] space-y-3 overflow-y-auto px-5 py-5" onScroll={handleVouchersScroll}>
+              {isLoadingVouchers && vouchersList.length === 0 && (
                 <div className="space-y-3">
                   {Array.from({ length: 3 }).map((_, index) => (
                     <div key={index} className="h-28 animate-pulse rounded-2xl bg-slate-100" />
@@ -478,17 +567,16 @@ function Checkout() {
                 </div>
               )}
 
-              {!isLoadingVouchers && vouchers.length === 0 && (
+              {!isLoadingVouchers && vouchersList.length === 0 && (
                 <p className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
                   Chưa có voucher khả dụng.
                 </p>
               )}
 
-              {!isLoadingVouchers &&
-                vouchers.map((voucher) => {
-                  const isEligible = subtotal >= voucher.minOrderValue;
+              {vouchersList.map((voucher) => {
+                const isEligible = subtotal >= voucher.minOrderValue;
 
-                  return (
+                return (
                     <button
                       key={voucher.id}
                       type="button"
@@ -533,8 +621,22 @@ function Checkout() {
                         </span>
                       </div>
                     </button>
-                  );
-                })}
+                );
+              })}
+
+              {isLoadingVouchers && vouchersList.length > 0 && (
+                <p className="py-2 text-center text-sm text-slate-500">Đang tải thêm mã giảm giá...</p>
+              )}
+
+              {!isLoadingVouchers && hasMore && vouchersList.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setPage((currentPage) => currentPage + 1)}
+                  className="mx-auto flex h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
+                >
+                  Xem thêm mã giảm giá
+                </button>
+              )}
             </div>
           </div>
         </div>

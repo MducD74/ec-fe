@@ -75,7 +75,7 @@ function VoucherList({ vouchers, copiedCode, onCopyCode }: VoucherListProps) {
       </div>
 
       <div className="hide-scrollbar flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
-        {vouchers.map((voucher) => {
+        {vouchers.slice(0, 3).map((voucher) => {
           const isCopied = copiedCode === voucher.code;
 
           return (
@@ -111,11 +111,11 @@ function VoucherList({ vouchers, copiedCode, onCopyCode }: VoucherListProps) {
                   onClick={() => onCopyCode(voucher.code)}
                   className={`inline-flex h-10 w-full items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors ${
                     isCopied
-                      ? "bg-slate-100 text-slate-400"
-                      : "bg-slate-950 text-white hover:bg-slate-800"
+                      ? "border border-slate-200 bg-slate-100 text-slate-400"
+                      : "border border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50 hover:text-slate-950"
                   }`}
                 >
-                  {isCopied ? "Đã lưu" : "Lưu mã"}
+                  {isCopied ? "Đã sao chép" : "Sao chép"}
                 </button>
               </div>
             </article>
