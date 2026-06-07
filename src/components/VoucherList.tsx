@@ -69,9 +69,6 @@ function VoucherList({ vouchers, copiedCode, onCopyCode }: VoucherListProps) {
             Khuyến mãi độc quyền
           </h2>
         </div>
-        <p className="max-w-md text-sm leading-6 text-slate-500">
-          Lưu mã trước khi thanh toán để nhận mức giá tốt hơn cho đơn hàng của bạn.
-        </p>
       </div>
 
       <div className="hide-scrollbar flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
