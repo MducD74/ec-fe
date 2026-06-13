@@ -4,6 +4,8 @@ import Pagination from "../components/Pagination";
 import ProductCard, { type Product } from "../components/ProductCard";
 import apiClient from "../lib/api-client";
 
+const brands = ["Tất cả", "Apple", "Samsung", "Corsair", "Asus", "Dell"];
+
 interface ProductsResponse {
   data?: Product[];
   products?: Product[];
@@ -25,6 +27,7 @@ function Catalog() {
   const [products, setProducts] = useState<Product[]>([]);
   const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedBrand, setSelectedBrand] = useState("Tất cả");
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(12);
   const [totalProducts, setTotalProducts] = useState(0);
@@ -76,6 +79,7 @@ function Catalog() {
             page: currentPage,
             limit,
             ...(selectedCategoryId ? { categoryId: selectedCategoryId } : {}),
+            ...(selectedBrand !== "Tất cả" ? { brand: selectedBrand } : {}),
           },
         });
 
@@ -104,10 +108,21 @@ function Catalog() {
     return () => {
       isMounted = false;
     };
-  }, [selectedCategoryId, currentPage, limit]);
+  }, [selectedCategoryId, selectedBrand, currentPage, limit]);
 
   const selectCategory = (categoryId: number | null) => {
     setSelectedCategoryId(categoryId);
+    setCurrentPage(1);
+  };
+
+  const selectBrand = (brand: string) => {
+    setSelectedBrand(brand);
+    setCurrentPage(1);
+  };
+
+  const clearFilters = () => {
+    setSelectedCategoryId(null);
+    setSelectedBrand("Tất cả");
     setCurrentPage(1);
   };
 
@@ -122,7 +137,7 @@ function Catalog() {
             Tất cả sản phẩm
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            Lọc theo danh mục lồng nhau và duyệt sản phẩm với trải nghiệm tối giản, rõ ràng.
+            Lọc theo danh mục, thương hiệu và duyệt sản phẩm với trải nghiệm tối giản, rõ ràng.
           </p>
         </div>
         <div className="rounded-md border border-slate-100 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm">
@@ -138,7 +153,7 @@ function Catalog() {
                 Mua sắm AI
               </p>
               <h2 className="mt-2 text-2xl font-bold tracking-normal text-slate-950">
-                ✨ Gợi ý dành riêng cho bạn
+                Gợi ý dành riêng cho bạn
               </h2>
             </div>
           </div>
@@ -161,10 +176,40 @@ function Catalog() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-        <CategorySidebar
-          selectedCategoryId={selectedCategoryId}
-          onSelectCategory={selectCategory}
-        />
+        <div className="space-y-5">
+          <CategorySidebar
+            selectedCategoryId={selectedCategoryId}
+            onSelectCategory={selectCategory}
+          />
+
+          <aside className="rounded-lg border border-slate-100 bg-white p-4 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+            <div className="mb-4 border-b border-slate-100 pb-4">
+              <h2 className="text-base font-semibold text-slate-950">Thương hiệu</h2>
+              <p className="mt-1 text-xs text-slate-500">Lọc theo hãng sản xuất</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              {brands.map((brand) => {
+                const isSelected = selectedBrand === brand;
+
+                return (
+                  <button
+                    key={brand}
+                    type="button"
+                    className={`h-10 rounded-md border px-3 text-sm font-semibold transition-colors ${
+                      isSelected
+                        ? "border-slate-950 bg-slate-950 text-white"
+                        : "border-slate-200 bg-white text-slate-700 hover:border-slate-950 hover:text-slate-950"
+                    }`}
+                    onClick={() => selectBrand(brand)}
+                  >
+                    {brand}
+                  </button>
+                );
+              })}
+            </div>
+          </aside>
+        </div>
 
         <section className="min-w-0 space-y-5">
           <div className="flex flex-col justify-between gap-3 rounded-lg border border-slate-100 bg-white px-5 py-4 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:flex-row sm:items-center">
@@ -174,11 +219,11 @@ function Catalog() {
                 Trang {currentPage} với {limit} sản phẩm mỗi trang
               </p>
             </div>
-            {selectedCategoryId && (
+            {(selectedCategoryId || selectedBrand !== "Tất cả") && (
               <button
                 type="button"
                 className="inline-flex h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-950 hover:text-slate-950"
-                onClick={() => selectCategory(null)}
+                onClick={clearFilters}
               >
                 Xóa bộ lọc
               </button>
@@ -204,7 +249,7 @@ function Catalog() {
 
           {!isLoadingProducts && !productsError && products.length === 0 && (
             <p className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
-              Chưa có sản phẩm nào trong danh mục này.
+              Chưa có sản phẩm nào phù hợp với bộ lọc hiện tại.
             </p>
           )}
 
