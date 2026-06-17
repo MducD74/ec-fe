@@ -73,7 +73,9 @@ function getRecommendedVouchers(response: RecommendedVouchersResponse) {
 }
 
 function getAvailableCount(product: Product) {
-  return product.inventory?.filter((item) => item.status !== "SOLD").length;
+  const inventories = product.productInventories ?? product.inventory;
+
+  return inventories?.filter((item) => item.status !== "SOLD").length;
 }
 
 function getGalleryImages(product: Product) {
@@ -254,7 +256,7 @@ function ProductInfo({ product }: { product: Product }) {
                   <span>{voucher.code}</span>
                   <span className="ml-2 text-rose-900">{getVoucherDiscountText(voucher)}</span>
                   {isUpsell && upsellAmount > 0 && (
-                    <span className="mt-1 block text-xs font-semibold text-red-600">
+                    <span className="mt-1 block text-xs font-semibold text-primary-600">
                       Mua thêm {formatPrice(upsellAmount)} để áp dụng
                     </span>
                   )}
@@ -290,7 +292,7 @@ function ProductInfo({ product }: { product: Product }) {
 
       <button
         type="button"
-        className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-slate-950 px-5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+        className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary-500 px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-600"
         onClick={handleAddToCart}
       >
         <ShoppingCart className="h-4 w-4" />
@@ -321,7 +323,7 @@ function SpecificationTable({ specifications }: { specifications?: Product["spec
   return (
     <section className="rounded-lg border border-slate-100 bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:p-6">
       <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-950 text-white">
+        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white">
           <ListChecks className="h-5 w-5" />
         </div>
         <div>
@@ -464,7 +466,7 @@ function ProductDetail() {
           <ArrowLeft className="h-4 w-4" />
           Quay lại danh mục
         </Link>
-        <p className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-primary-700">
           {productError ?? "Không tìm thấy sản phẩm."}
         </p>
       </section>
@@ -475,7 +477,7 @@ function ProductDetail() {
     <div className="space-y-12 py-8">
       <Link
         to="/catalog"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-slate-950"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-primary-600"
       >
         <ArrowLeft className="h-4 w-4" />
         Quay lại danh mục
@@ -527,3 +529,6 @@ function ProductDetail() {
 }
 
 export default ProductDetail;
+
+
+

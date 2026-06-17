@@ -33,7 +33,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       <div className="flex flex-wrap items-center justify-center gap-2">
         <button
           type="button"
-          className="inline-flex h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-950 hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-700"
+          className="inline-flex h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:border-primary-500 hover:text-primary-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-700"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={isFirstPage}
         >
@@ -44,7 +44,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         {pages[0] > 1 && (
           <button
             type="button"
-            className="h-10 min-w-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-950 hover:text-slate-950"
+            className="h-10 min-w-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:border-primary-500 hover:text-primary-600"
             onClick={() => onPageChange(1)}
           >
             1
@@ -59,8 +59,8 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
             type="button"
             className={`h-10 min-w-10 rounded-md border px-3 text-sm font-semibold transition-colors ${
               page === currentPage
-                ? "border-slate-950 bg-slate-950 text-white"
-                : "border-slate-200 bg-white text-slate-700 hover:border-slate-950 hover:text-slate-950"
+                ? "border-primary-500 bg-primary-500 text-white"
+                : "border-slate-200 bg-white text-slate-700 hover:border-primary-500 hover:text-primary-600"
             }`}
             onClick={() => onPageChange(page)}
             aria-current={page === currentPage ? "page" : undefined}
@@ -76,7 +76,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         {pages[pages.length - 1] < totalPages && (
           <button
             type="button"
-            className="h-10 min-w-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-950 hover:text-slate-950"
+            className="h-10 min-w-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:border-primary-500 hover:text-primary-600"
             onClick={() => onPageChange(totalPages)}
           >
             {totalPages}
@@ -85,7 +85,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
 
         <button
           type="button"
-          className="inline-flex h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-950 hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-700"
+          className="inline-flex h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:border-primary-500 hover:text-primary-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-700"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={isLastPage}
         >
@@ -98,3 +98,6 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
 }
 
 export default Pagination;
+
+
+

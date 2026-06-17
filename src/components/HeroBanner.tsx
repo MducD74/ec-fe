@@ -10,7 +10,7 @@ function HeroBanner() {
 
       <div className="relative grid min-h-[460px] items-center gap-10 px-6 py-10 sm:px-10 lg:grid-cols-[1.04fr_0.96fr] lg:px-12">
         <div className="max-w-xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
             <ShoppingBag className="h-3.5 w-3.5" />
             DUT Shop cao cấp
           </div>
@@ -18,19 +18,19 @@ function HeroBanner() {
           <h1 className="mt-6 text-4xl font-semibold tracking-normal text-slate-950 sm:text-5xl lg:text-6xl">
             Mua sắm tinh gọn, sang trọng và thông minh hơn.
           </h1>
-          <p className="mt-5 max-w-lg text-base leading-7 text-slate-600 sm:text-lg">
+          <p className="mt-5 max-w-lg text-base leading-7 text-slate-700 sm:text-lg">
             Khám phá những sản phẩm được chọn lọc kỹ lưỡng, ưu đãi riêng và trải nghiệm mua sắm liền mạch cho từng nhu cầu của bạn.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
               to="/catalog"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-slate-950 px-6 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-primary-500 to-primary-700 px-6 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-105"
             >
               Mua sắm ngay
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <span className="text-sm text-slate-500">Miễn phí giao hàng cho đơn từ 499K</span>
+            <span className="text-sm font-medium text-slate-700">Miễn phí giao hàng cho đơn từ 499K</span>
           </div>
         </div>
 
@@ -57,3 +57,6 @@ function HeroBanner() {
 }
 
 export default HeroBanner;
+
+
+

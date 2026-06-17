@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import SideBanners from "./components/SideBanners";
 import AdminDashboard from "./pages/AdminDashboard";
 import Cart from "./pages/Cart";
 import Catalog from "./pages/Catalog";
@@ -17,9 +18,10 @@ function App() {
   return (
     <BrowserRouter>
       <Toaster position="top-right" richColors closeButton />
-      <div className="flex min-h-screen flex-col bg-white text-slate-950">
+      <div className="flex min-h-screen flex-col bg-gray-50 text-slate-950">
+        <SideBanners />
         <Navbar />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        <main className="mx-auto my-8 w-full max-w-7xl flex-1 rounded-lg bg-white px-4 py-8 shadow-sm sm:px-6 lg:px-8">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -40,3 +42,6 @@ function App() {
 }
 
 export default App;
+
+
+

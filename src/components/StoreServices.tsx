@@ -39,7 +39,7 @@ function StoreServices() {
 
           return (
             <article key={service.title} className="flex gap-4 rounded-md p-3 transition-colors hover:bg-slate-50">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-slate-950 text-white">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary-500 text-white">
                 <Icon className="h-5 w-5" />
               </div>
               <div>
@@ -55,3 +55,6 @@ function StoreServices() {
 }
 
 export default StoreServices;
+
+
+

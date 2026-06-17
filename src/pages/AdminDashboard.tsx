@@ -119,7 +119,7 @@ const statusClassByValue: Record<string, string> = {
   SHIPPED: "bg-blue-50 text-blue-700 ring-blue-100",
   COMPLETED: "bg-emerald-50 text-emerald-700 ring-emerald-100",
   DELIVERED: "bg-emerald-50 text-emerald-700 ring-emerald-100",
-  CANCELLED: "bg-red-50 text-red-700 ring-red-100",
+  CANCELLED: "bg-red-50 text-primary-700 ring-red-100",
 };
 
 function formatCurrency(value: string | number) {
@@ -244,7 +244,7 @@ function AdminDashboard() {
 
     try {
       await apiClient.post("/admin/ai/train");
-      toast.success("Đã kích hoạt huấn luyện AI offline.");
+      toast.success("Đã kích hoạt huấn luyện AI ngoại tuyến.");
     } catch {
       toast.error("Không thể kích hoạt huấn luyện AI.");
     } finally {
@@ -276,8 +276,8 @@ function AdminDashboard() {
                   type="button"
                   className={`flex h-12 w-full items-center gap-3 rounded-md px-4 text-left text-sm font-semibold transition-colors ${
                     isActive
-                      ? "bg-slate-950 text-white"
-                      : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
+                      ? "bg-primary-500 text-white"
+                      : "text-slate-700 hover:bg-slate-50 hover:text-primary-600"
                   }`}
                   onClick={() => setActiveTab(tab.id)}
                 >
@@ -438,7 +438,7 @@ function AdminDashboard() {
                             <td className="px-5 py-4">
                               <div className="flex flex-col gap-2">
                                 <select
-                                  className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none transition-colors focus:border-slate-950"
+                                  className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
                                   value={order.status === "COMPLETED" ? "DELIVERED" : order.status}
                                   disabled={isUpdating}
                                   onChange={(event) => {
@@ -454,7 +454,7 @@ function AdminDashboard() {
 
                                 <button
                                   type="button"
-                                  className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-slate-950 px-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                                  className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary-500 px-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-slate-400"
                                   disabled={isUpdating}
                                   onClick={() => {
                                     void updateOrderStatus(order.id, "DELIVERED");
@@ -521,7 +521,7 @@ function AdminDashboard() {
                       >
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="rounded-md bg-slate-950 px-2.5 py-1 text-xs font-semibold text-white">
+                            <span className="rounded-md bg-primary-500 px-2.5 py-1 text-xs font-semibold text-white">
                               {voucher.code}
                             </span>
                             <span className="text-sm font-semibold text-slate-950">
@@ -553,3 +553,6 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
+
+
+

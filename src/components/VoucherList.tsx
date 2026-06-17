@@ -102,14 +102,14 @@ function VoucherList({ vouchers, copiedCode, onCopyCode }: VoucherListProps) {
                 </p>
               </div>
 
-              <div className="border-t border-dashed border-slate-300 p-4">
+              <div className="border-t border-dashed border-gray-300 p-4">
                 <button
                   type="button"
                   onClick={() => onCopyCode(voucher.code)}
                   className={`inline-flex h-10 w-full items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors ${
                     isCopied
                       ? "border border-slate-200 bg-slate-100 text-slate-400"
-                      : "border border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50 hover:text-slate-950"
+                      : "border border-gray-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50 hover:text-primary-600"
                   }`}
                 >
                   {isCopied ? "Đã sao chép" : "Sao chép"}
@@ -124,3 +124,6 @@ function VoucherList({ vouchers, copiedCode, onCopyCode }: VoucherListProps) {
 }
 
 export default VoucherList;
+
+
+

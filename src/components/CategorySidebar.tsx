@@ -47,7 +47,7 @@ function CategoryTreeItem({
     <li>
       <div
         className={`flex items-center gap-1 rounded-md pr-2 transition-colors ${
-          isSelected ? "bg-slate-950 text-white" : "text-slate-700 hover:bg-slate-50"
+          isSelected ? "bg-primary-500 text-white" : "text-slate-700 hover:bg-slate-50"
         }`}
         style={{ paddingLeft: `${depth * 14 + 8}px` }}
       >
@@ -149,7 +149,7 @@ function CategorySidebar({ selectedCategoryId, onSelectCategory }: CategorySideb
   return (
     <aside className="rounded-lg border border-slate-100 bg-white p-4 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
       <div className="mb-4 flex items-center gap-2 border-b border-slate-100 pb-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-950 text-white">
+        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white">
           <FolderTree className="h-5 w-5" />
         </div>
         <div>
@@ -161,7 +161,7 @@ function CategorySidebar({ selectedCategoryId, onSelectCategory }: CategorySideb
       <button
         type="button"
         className={`mb-3 flex w-full items-center rounded-md px-3 py-2 text-left text-sm font-semibold transition-colors ${
-          selectedCategoryId === null ? "bg-slate-950 text-white" : "text-slate-700 hover:bg-slate-50"
+          selectedCategoryId === null ? "bg-primary-500 text-white" : "text-slate-700 hover:bg-slate-50"
         }`}
         onClick={() => onSelectCategory(null)}
       >
@@ -207,3 +207,6 @@ function CategorySidebar({ selectedCategoryId, onSelectCategory }: CategorySideb
 }
 
 export default CategorySidebar;
+
+
+

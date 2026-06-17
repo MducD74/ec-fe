@@ -88,7 +88,7 @@ function CartItemCard({
             type="button"
             onClick={() => onRemove(item)}
             disabled={isUpdating}
-            className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-red-600 transition-colors hover:text-red-700 disabled:cursor-not-allowed disabled:text-red-300"
+            className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary-600 transition-colors hover:text-primary-700 disabled:cursor-not-allowed disabled:text-red-300"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Xóa
@@ -100,3 +100,6 @@ function CartItemCard({
 }
 
 export default CartItemCard;
+
+
+

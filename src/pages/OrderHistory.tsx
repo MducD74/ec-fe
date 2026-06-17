@@ -54,7 +54,7 @@ const statusClassByValue: Record<string, string> = {
   PENDING: "bg-amber-50 text-amber-700 ring-amber-100",
   PROCESSING: "bg-blue-50 text-blue-700 ring-blue-100",
   COMPLETED: "bg-emerald-50 text-emerald-700 ring-emerald-100",
-  CANCELLED: "bg-red-50 text-red-700 ring-red-100",
+  CANCELLED: "bg-red-50 text-primary-700 ring-red-100",
 };
 
 function formatCurrency(value: string | number) {
@@ -145,7 +145,7 @@ function OrderHistory() {
       )}
 
       {!isLoading && error && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-primary-700">
           {error}
         </div>
       )}
@@ -163,7 +163,7 @@ function OrderHistory() {
           </p>
           <Link
             to="/catalog"
-            className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-slate-950 px-5 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+            className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-primary-500 px-5 text-sm font-medium text-white transition-colors duration-200 hover:bg-primary-600"
           >
             Tiếp tục mua sắm
           </Link>
@@ -219,7 +219,7 @@ function OrderHistory() {
                     {canComplete && (
                       <button
                         type="button"
-                        className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                        className="rounded-xl bg-primary-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-slate-400"
                         disabled={isCompleting}
                         onClick={(event) => {
                           event.stopPropagation();
@@ -282,3 +282,6 @@ function OrderHistory() {
 }
 
 export default OrderHistory;
+
+
+

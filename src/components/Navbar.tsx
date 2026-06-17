@@ -62,13 +62,13 @@ function Navbar() {
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     [
       "text-sm font-medium transition-colors",
-      isActive ? "text-slate-950" : "text-slate-500 hover:text-slate-900",
+      isActive ? "text-white" : "text-white/80 hover:text-white",
     ].join(" ");
 
   return (
-    <header className="border-b border-slate-200 bg-white">
+    <header className="bg-gradient-to-r from-primary-500 to-primary-700 shadow-sm">
       <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="text-lg font-semibold tracking-normal text-slate-950">
+        <Link to="/" className="text-lg font-semibold tracking-normal text-white">
           DUT Shop
         </Link>
 
@@ -84,7 +84,7 @@ function Navbar() {
         <div className="flex items-center gap-2">
           <Link
             to="/cart"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-700 transition-colors hover:bg-slate-50"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/35 bg-white/10 text-white transition-colors hover:bg-white/20"
             aria-label="Giỏ hàng"
             title="Giỏ hàng"
           >
@@ -96,7 +96,7 @@ function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsProfileMenuOpen((isOpen) => !isOpen)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-700 transition-colors hover:bg-slate-50"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/35 bg-white/10 text-white transition-colors hover:bg-white/20"
                 aria-label="Menu tài khoản"
                 aria-expanded={isProfileMenuOpen}
               >
@@ -104,7 +104,7 @@ function Navbar() {
               </button>
 
               {isProfileMenuOpen && (
-                <div className="absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-xl">
+                <div className="absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-2xl border border-gray-300 bg-white py-2 shadow-xl">
                   <button
                     type="button"
                     onClick={() => handleProfileMenuNavigate("/orders/history")}
@@ -135,7 +135,7 @@ function Navbar() {
           ) : (
             <Link
               to="/login"
-              className="inline-flex h-10 items-center gap-2 rounded-md bg-slate-950 px-3 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-white px-3 text-sm font-semibold text-primary-600 shadow-sm transition-colors duration-200 hover:bg-primary-50"
             >
               <UserRound className="h-4 w-4" />
               <span>Đăng nhập</span>
@@ -148,3 +148,6 @@ function Navbar() {
 }
 
 export default Navbar;
+
+
+

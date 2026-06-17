@@ -1,7 +1,14 @@
-import { ShoppingCart } from "lucide-react";
+﻿import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import apiClient from "../lib/api-client";
+
+interface ProductInventory {
+  id: number;
+  status?: string;
+  quantity?: number;
+  stock?: number;
+}
 
 export interface Product {
   id: number;
@@ -15,10 +22,26 @@ export interface Product {
     id: number;
     name: string;
   } | null;
-  inventory?: Array<{
+  brand?: {
     id: number;
-    status?: string;
-  }>;
+    name: string;
+    logoUrl?: string | null;
+  } | null;
+  inventory?: ProductInventory[];
+  productInventories?: ProductInventory[];
+}
+
+export interface PaginationMeta {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  limit: number;
+}
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  data: T[];
+  meta: PaginationMeta;
 }
 
 interface ProductCardProps {
@@ -39,18 +62,35 @@ function formatPrice(price: string | number) {
   }).format(numericPrice);
 }
 
-function getAvailableCount(product: Product) {
-  if (!product.inventory) {
-    return undefined;
+function getInventoryQuantity(product: Product) {
+  const inventories = product.productInventories ?? product.inventory;
+
+  if (!inventories) {
+    return 0;
   }
 
-  return product.inventory.filter((item) => item.status !== "SOLD").length;
+  return inventories.reduce((total, item) => {
+    if (typeof item.quantity === "number") {
+      return total + item.quantity;
+    }
+
+    if (typeof item.stock === "number") {
+      return total + item.stock;
+    }
+
+    return item.status !== "SOLD" ? total + 1 : total;
+  }, 0);
 }
 
 function ProductCard({ product }: ProductCardProps) {
-  const availableCount = getAvailableCount(product);
+  const inventoryQuantity = getInventoryQuantity(product);
+  const isInStock = inventoryQuantity > 0;
 
   const handleAddToCart = async () => {
+    if (!isInStock) {
+      return;
+    }
+
     try {
       await apiClient.post("/cart/items", {
         productId: product.id,
@@ -64,11 +104,22 @@ function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <article className="overflow-hidden rounded-md border border-slate-200 bg-white transition-shadow hover:shadow-sm">
+    <article
+      className={`overflow-hidden rounded-md border border-slate-200 bg-white transition-shadow hover:shadow-sm ${
+        isInStock ? "" : "opacity-75"
+      }`}
+    >
       <Link
         to={`/catalog/${product.id}`}
-        className="flex aspect-[4/3] items-center justify-center bg-slate-100 text-sm font-medium text-slate-500"
+        className="relative flex aspect-[4/3] items-center justify-center bg-slate-100 text-sm font-medium text-slate-500"
       >
+        <span
+          className={`absolute left-3 top-3 z-10 rounded-full px-2.5 py-1 text-xs font-bold shadow-sm ${
+            isInStock ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-primary-700"
+          }`}
+        >
+          {isInStock ? "Còn hàng" : "Hết hàng"}
+        </span>
         <img src={product.imageUrl || "/placeholder.jpg"} alt={product.name} className="object-cover" />
       </Link>
 
@@ -86,19 +137,18 @@ function ProductCard({ product }: ProductCardProps) {
 
         <div className="flex items-end justify-between gap-3">
           <div>
-            <p className="text-base font-semibold text-slate-950">
+            <p className="text-base font-semibold text-primary-600">
               {formatPrice(product.price)}
             </p>
-            {typeof availableCount === "number" && (
-              <p className="mt-1 text-xs text-slate-500">Còn lại {availableCount}</p>
-            )}
+            <p className="mt-1 text-xs text-slate-500">Còn lại {inventoryQuantity}</p>
           </div>
 
           <button
             type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-950 text-white transition-colors hover:bg-slate-800"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-primary-500 text-white transition-colors duration-200 hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
             aria-label={`Thêm ${product.name} vào giỏ hàng`}
             title="Thêm vào giỏ"
+            disabled={!isInStock}
             onClick={handleAddToCart}
           >
             <ShoppingCart className="h-4 w-4" />

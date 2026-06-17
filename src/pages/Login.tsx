@@ -70,11 +70,11 @@ function Login() {
             id="email"
             type="email"
             autoComplete="email"
-            className="h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition-colors focus:border-slate-950"
+            className="h-11 w-full rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
             {...register("email")}
           />
           {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+            <p className="mt-1 text-sm text-primary-600">{errors.email.message}</p>
           )}
         </div>
 
@@ -86,18 +86,18 @@ function Login() {
             id="password"
             type="password"
             autoComplete="current-password"
-            className="h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition-colors focus:border-slate-950"
+            className="h-11 w-full rounded-md border border-gray-300 px-3 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
             {...register("password")}
           />
           {errors.password && (
-            <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+            <p className="mt-1 text-sm text-primary-600">{errors.password.message}</p>
           )}
         </div>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="h-11 w-full rounded-md bg-slate-950 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+          className="h-11 w-full rounded-md bg-primary-500 px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-slate-400"
         >
           {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
         </button>
@@ -105,7 +105,7 @@ function Login() {
 
       <p className="mt-4 text-center text-sm text-slate-600">
         Chưa có tài khoản?{" "}
-        <Link className="font-medium text-slate-950 hover:underline" to="/register">
+        <Link className="font-semibold text-primary-600 hover:underline" to="/register">
           Đăng ký
         </Link>
       </p>
@@ -114,3 +114,6 @@ function Login() {
 }
 
 export default Login;
+
+
+

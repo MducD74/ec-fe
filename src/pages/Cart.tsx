@@ -109,7 +109,7 @@ function Cart() {
       {isLoading && <p className="text-sm text-slate-500">Đang tải giỏ hàng...</p>}
 
       {!isLoading && error && (
-        <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-primary-700">
           {error}
         </p>
       )}
@@ -119,7 +119,7 @@ function Cart() {
           <p className="text-sm text-slate-600">Giỏ hàng đang trống.</p>
           <Link
             to="/catalog"
-            className="mt-4 inline-flex h-10 items-center rounded-md bg-slate-950 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+            className="mt-4 inline-flex h-10 items-center rounded-md bg-primary-500 px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-primary-600"
           >
             Xem sản phẩm
           </Link>
@@ -155,7 +155,7 @@ function Cart() {
             </div>
             <Link
               to="/checkout"
-              className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-md bg-slate-950 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+              className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-md bg-primary-500 px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-primary-600"
             >
               Chuyển sang thanh toán
             </Link>
@@ -167,3 +167,6 @@ function Cart() {
 }
 
 export default Cart;
+
+
+

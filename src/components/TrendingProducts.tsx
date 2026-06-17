@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import ProductCard, { type Product } from "./ProductCard";
-import apiClient from "../lib/api-client";
-
-interface ProductsResponse {
-  products?: Product[];
-}
+import { fetchProducts } from "../lib/api-client";
 
 function TrendingProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,10 +12,10 @@ function TrendingProducts() {
 
     async function loadProducts() {
       try {
-        const response = await apiClient.get<ProductsResponse>("/products");
+        const response = await fetchProducts({ page: 1, limit: 8 });
 
         if (isMounted) {
-          setProducts((response.data.products ?? []).slice(0, 8));
+          setProducts(response.data);
         }
       } catch {
         if (isMounted) {
@@ -64,7 +60,7 @@ function TrendingProducts() {
       )}
 
       {!isLoading && error && (
-        <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-primary-700">
           {error}
         </p>
       )}
@@ -87,3 +83,6 @@ function TrendingProducts() {
 }
 
 export default TrendingProducts;
+
+
+

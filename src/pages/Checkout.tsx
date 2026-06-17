@@ -378,7 +378,7 @@ function Checkout() {
               <input
                 value={shippingAddress.fullName}
                 onChange={(event) => updateShippingAddress("fullName", event.target.value)}
-                className="mt-1 h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-slate-950"
+                className="mt-1 h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
               />
             </label>
             <label className="block text-sm font-medium text-slate-700">
@@ -386,7 +386,7 @@ function Checkout() {
               <input
                 value={shippingAddress.phone}
                 onChange={(event) => updateShippingAddress("phone", event.target.value)}
-                className="mt-1 h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-slate-950"
+                className="mt-1 h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
               />
             </label>
             <label className="block text-sm font-medium text-slate-700 sm:col-span-2">
@@ -394,7 +394,7 @@ function Checkout() {
               <input
                 value={shippingAddress.addressLine}
                 onChange={(event) => updateShippingAddress("addressLine", event.target.value)}
-                className="mt-1 h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-slate-950"
+                className="mt-1 h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
               />
             </label>
             <label className="block text-sm font-medium text-slate-700">
@@ -402,7 +402,7 @@ function Checkout() {
               <input
                 value={shippingAddress.ward}
                 onChange={(event) => updateShippingAddress("ward", event.target.value)}
-                className="mt-1 h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-slate-950"
+                className="mt-1 h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
               />
             </label>
             <label className="block text-sm font-medium text-slate-700">
@@ -410,7 +410,7 @@ function Checkout() {
               <input
                 value={shippingAddress.district}
                 onChange={(event) => updateShippingAddress("district", event.target.value)}
-                className="mt-1 h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-slate-950"
+                className="mt-1 h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
               />
             </label>
             <label className="block text-sm font-medium text-slate-700 sm:col-span-2">
@@ -418,7 +418,7 @@ function Checkout() {
               <input
                 value={shippingAddress.city}
                 onChange={(event) => updateShippingAddress("city", event.target.value)}
-                className="mt-1 h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-slate-950"
+                className="mt-1 h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
               />
             </label>
           </div>
@@ -427,7 +427,7 @@ function Checkout() {
         <div className="border-t border-slate-200 pt-5">
           <h2 className="text-base font-semibold text-slate-950">Phương thức thanh toán</h2>
           <div className="mt-4 space-y-3">
-            <label className="flex items-start gap-3 rounded-md border border-slate-300 bg-slate-50 p-4">
+            <label className="flex items-start gap-3 rounded-md border border-gray-300 bg-slate-50 p-4">
               <input
                 type="radio"
                 name="paymentMethod"
@@ -470,13 +470,13 @@ function Checkout() {
               value={voucherCode}
               onChange={(event) => handleVoucherCodeChange(event.target.value)}
               placeholder="Nhập mã giảm giá"
-              className="h-11 flex-1 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-slate-950"
+              className="h-11 flex-1 rounded-md border border-gray-300 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
             />
             <button
               type="button"
               onClick={openVoucherModal}
               disabled={isLoadingCart}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-5 text-sm font-semibold text-slate-800 transition-colors hover:border-slate-300 hover:bg-white disabled:cursor-not-allowed disabled:text-slate-400"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-5 text-sm font-semibold text-slate-800 transition-colors hover:border-gray-300 hover:bg-white disabled:cursor-not-allowed disabled:text-slate-400"
             >
               <Ticket className="h-4 w-4" />
               Chọn mã giảm giá
@@ -490,7 +490,7 @@ function Checkout() {
               {isApplyingVoucher ? "Đang áp dụng..." : "Áp dụng"}
             </button>
           </div>
-          {voucherError && <p className="mt-2 text-sm text-red-600">{voucherError}</p>}
+          {voucherError && <p className="mt-2 text-sm text-primary-600">{voucherError}</p>}
         </div>
 
         <div className="border-t border-slate-200 pt-5">
@@ -519,14 +519,14 @@ function Checkout() {
           type="button"
           onClick={handleCheckout}
           disabled={isSubmitting}
-          className="inline-flex h-11 w-full items-center justify-center rounded-md bg-slate-950 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+          className="inline-flex h-11 w-full items-center justify-center rounded-md bg-primary-500 px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-slate-400"
         >
           {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt hàng"}
         </button>
       </div>
 
       {isVoucherModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/45 px-4 py-4 backdrop-blur-sm sm:items-center">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-primary-500/45 px-4 py-4 backdrop-blur-sm sm:items-center">
           <div className="max-h-[86vh] w-full max-w-2xl overflow-hidden rounded-[24px] bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
               <div>
@@ -538,7 +538,7 @@ function Checkout() {
               <button
                 type="button"
                 onClick={() => setIsVoucherModalOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-950"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200 hover:text-primary-600"
                 aria-label="Đóng"
               >
                 <X className="h-5 w-5" />
@@ -553,7 +553,7 @@ function Checkout() {
                   value={voucherSearch}
                   onChange={(event) => setVoucherSearch(event.target.value)}
                   placeholder="Tìm kiếm mã giảm giá..."
-                  className="h-11 w-full rounded-md border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-slate-950"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
                 />
               </label>
             </div>
@@ -589,7 +589,7 @@ function Checkout() {
                       }`}
                     >
                       <div className="flex flex-1 gap-4 p-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-500 text-white">
                           <Ticket className="h-5 w-5" />
                         </div>
                         <div className="min-w-0">
@@ -603,7 +603,7 @@ function Checkout() {
                             Đơn tối thiểu {formatCompactCurrency(voucher.minOrderValue)}
                           </p>
                           {!isEligible && (
-                            <p className="mt-2 text-sm font-semibold text-red-600">
+                            <p className="mt-2 text-sm font-semibold text-primary-600">
                               Chưa đủ điều kiện
                             </p>
                           )}
@@ -613,7 +613,7 @@ function Checkout() {
                         <span
                           className={`inline-flex h-10 w-full items-center justify-center rounded-md text-sm font-semibold transition-colors ${
                             isEligible
-                              ? "bg-slate-950 text-white group-hover:bg-slate-800"
+                              ? "bg-primary-500 text-white group-hover:bg-primary-600"
                               : "bg-slate-100 text-slate-400"
                           }`}
                         >
@@ -632,7 +632,7 @@ function Checkout() {
                 <button
                   type="button"
                   onClick={() => setPage((currentPage) => currentPage + 1)}
-                  className="mx-auto flex h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
+                  className="mx-auto flex h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:border-gray-300 hover:bg-slate-50"
                 >
                   Xem thêm mã giảm giá
                 </button>
@@ -646,3 +646,6 @@ function Checkout() {
 }
 
 export default Checkout;
+
+
+
