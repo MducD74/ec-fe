@@ -3,7 +3,6 @@ import { Toaster } from "sonner";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import SideBanners from "./components/SideBanners";
-import AdminDashboard from "./pages/AdminDashboard";
 import Cart from "./pages/Cart";
 import Catalog from "./pages/Catalog";
 import Checkout from "./pages/Checkout";
