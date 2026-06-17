@@ -1,7 +1,7 @@
 import axios, { AxiosHeaders, type InternalAxiosRequestConfig } from "axios";
 import type { PaginatedResponse, PaginationMeta, Product } from "../components/ProductCard";
 
-const API_BASE_URL = "http://localhost:3000/api/v1";
+const API_BASE_URL = "/api/v1";
 const ACCESS_TOKEN_KEY = "access_token";
 const GUEST_SESSION_ID_KEY = "guest_session_id";
 
