@@ -233,7 +233,7 @@ function Catalog() {
         </div>
       </section>
 
-      {(isRecommendLoading || recommendedProducts.length > 0) && (
+      {(!isRecommendLoading && recommendedProducts.length > 0) && (
         <section className="mb-8 rounded-lg border border-slate-100 bg-white px-5 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
           <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>

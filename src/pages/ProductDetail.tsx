@@ -369,49 +369,54 @@ function ProductDetail() {
   const [productError, setProductError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
+  if (!id) return;
 
-    async function loadProduct() {
-      setIsLoadingProduct(true);
-      setProductError(null);
+  const controller = new AbortController();
 
-      try {
-        const response = await apiClient.get<ProductDetailResponse>(`/products/${id}`);
-        const loadedProduct = getProduct(response.data);
+  async function loadProduct() {
+    setIsLoadingProduct(true);
+    setProductError(null);
 
-        if (isMounted) {
-          setProduct(loadedProduct);
+    try {
+      const response = await apiClient.get<ProductDetailResponse>(
+        `/products/${id}`,
+        {
+          signal: controller.signal,
         }
+      );
 
-        if (loadedProduct) {
-          try {
-            await apiClient.post("/interactions", {
-              productId: loadedProduct.id,
-              actionType: "VIEW",
-            });
-          } catch (error) {
-            console.warn("Unable to log product view interaction:", error);
-          }
-        }
-      } catch {
-        if (isMounted) {
-          setProductError("Không thể tải thông tin sản phẩm.");
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoadingProduct(false);
+      const loadedProduct = getProduct(response.data);
+      setProduct(loadedProduct);
+
+      if (loadedProduct) {
+        try {
+          await apiClient.post("/interactions", {
+            productId: loadedProduct.id,
+            actionType: "VIEW",
+          });
+        } catch (error) {
+          console.warn("Unable to log product view interaction:", error);
         }
       }
-    }
+    } catch (error: any) {
+      if (error?.name === "CanceledError" || error?.code === "ERR_CANCELED") {
+        return;
+      }
 
-    if (id) {
-      void loadProduct();
+      setProductError("Không thể tải thông tin sản phẩm.");
+    } finally {
+      if (!controller.signal.aborted) {
+        setIsLoadingProduct(false);
+      }
     }
+  }
 
-    return () => {
-      isMounted = false;
-    };
-  }, [id]);
+  void loadProduct();
+
+  return () => {
+    controller.abort();
+  };
+}, [id]);
 
   useEffect(() => {
     let isMounted = true;

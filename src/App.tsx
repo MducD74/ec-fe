@@ -20,7 +20,7 @@ function App() {
       <div className="flex min-h-screen flex-col bg-gray-50 text-slate-950">
         <SideBanners />
         <Navbar />
-        <main className="mx-auto my-8 w-full max-w-7xl flex-1 rounded-lg bg-white px-4 py-8 shadow-sm sm:px-6 lg:px-8">
+        <main className="mx-auto my-8 w-full max-w-5xl flex-1 rounded-lg bg-white px-4 py-8 shadow-sm sm:px-6 lg:px-8">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />

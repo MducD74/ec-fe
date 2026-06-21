@@ -120,7 +120,7 @@ function ProductCard({ product }: ProductCardProps) {
         >
           {isInStock ? "Còn hàng" : "Hết hàng"}
         </span>
-        <img src={product.imageUrl || "/placeholder.jpg"} alt={product.name} className="object-cover" />
+        <img src={product.imageUrl || "/placeholder.jpg"} alt={product.name} className="object-cover" style={{height: '150px' }} />
       </Link>
 
       <div className="space-y-3 p-4">

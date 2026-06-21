@@ -42,7 +42,7 @@ function CartItemCard({
   return (
     <article className="flex flex-col gap-4 rounded-md border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
       <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-md bg-slate-100 text-xs font-medium text-slate-500">
-        <img src={item.product.imageUrl || "/placeholder.jpg"} alt={item.product.name} className="object-cover" />
+        <img src={item.product.imageUrl || "/placeholder.jpg"} alt={item.product.name} className="object-cover"/>
       </div>
 
       <div className="min-w-0 flex-1">

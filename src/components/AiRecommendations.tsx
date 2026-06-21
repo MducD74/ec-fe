@@ -49,6 +49,10 @@ function AiRecommendations() {
     };
   }, []);
 
+  if (!isLoading && products.length === 0) {
+    return null;
+  }
+
   return (
     <section>
       <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">

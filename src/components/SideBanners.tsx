@@ -20,7 +20,7 @@ function SideBanners() {
         <a
           key={banner.className}
           href={banner.href}
-          className={`fixed top-32 z-40 hidden 2xl:block ${banner.className}`}
+          className={`fixed top-32 z-40 2xl:block ${banner.className}`}
           aria-label={banner.alt}
         >
           <img
