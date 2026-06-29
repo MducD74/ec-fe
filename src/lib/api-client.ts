@@ -1,5 +1,6 @@
-import axios, { AxiosHeaders, type InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosHeaders, type InternalAxiosRequestConfig } from "axios";
 import type { PaginatedResponse, PaginationMeta, Product } from "../components/ProductCard";
+import { ToastHelper } from "./toast-helper";
 
 const API_BASE_URL = "/api/v1";
 const ACCESS_TOKEN_KEY = "access_token";
@@ -87,6 +88,33 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
   return config;
 });
+
+let isHandlingUnauthorized = false;
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 401 && !isHandlingUnauthorized) {
+      isHandlingUnauthorized = true;
+
+      getBrowserStorage()?.removeItem(ACCESS_TOKEN_KEY);
+      window.dispatchEvent(new Event("auth-token-changed"));
+
+      setTimeout(() => {
+        isHandlingUnauthorized = false;
+      }, 0);
+    }
+
+    const message =
+      (error.response?.data as any)?.message;
+
+    if (message) {
+      ToastHelper.error(message);
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export async function fetchProducts({
   page = 1,

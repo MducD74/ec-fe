@@ -64,8 +64,8 @@ function Cart() {
         quantity,
       });
       setItems(response.data.cart.items);
-    } catch {
-      ToastHelper.error("Cập nhật giỏ hàng thất bại.");
+    } catch (error) {
+      throw error;
     } finally {
       setUpdatingProductId(null);
     }
@@ -82,19 +82,6 @@ function Cart() {
     } finally {
       setUpdatingProductId(null);
     }
-  };
-
-  const handleIncrease = (item: CartItem) => {
-    updateQuantity(item, item.quantity + 1);
-  };
-
-  const handleDecrease = (item: CartItem) => {
-    if (item.quantity <= 1) {
-      removeItem(item);
-      return;
-    }
-
-    updateQuantity(item, item.quantity - 1);
   };
 
   return (
@@ -128,14 +115,13 @@ function Cart() {
 
       {items.length > 0 && (
         <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-          <div className="space-y-3">
+          <div className="min-w-0 space-y-3">
             {items.map((item) => (
               <CartItemCard
                 key={item.id}
                 item={item}
                 isUpdating={updatingProductId === item.productId}
-                onIncrease={handleIncrease}
-                onDecrease={handleDecrease}
+                onUpdate={updateQuantity}
                 onRemove={removeItem}
               />
             ))}

@@ -1,5 +1,6 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 import type { Product } from "./ProductCard";
+import { useState } from "react";
 
 export interface CartItem {
   id: number;
@@ -11,8 +12,7 @@ export interface CartItem {
 interface CartItemCardProps {
   item: CartItem;
   isUpdating?: boolean;
-  onIncrease: (item: CartItem) => void;
-  onDecrease: (item: CartItem) => void;
+  onUpdate: (item: CartItem, quantity: number) => Promise<void>;
   onRemove: (item: CartItem) => void;
 }
 
@@ -33,11 +33,29 @@ function formatPrice(price: string | number) {
 function CartItemCard({
   item,
   isUpdating = false,
-  onIncrease,
-  onDecrease,
-  onRemove,
+  onUpdate,
+  onRemove
 }: CartItemCardProps) {
+  const [quantity, setQuantity] = useState(item.quantity);
   const lineTotal = Number(item.product.price) * item.quantity;
+
+  const handleUpdate = async (quantity: number) => {
+    const previous = item.quantity;
+    if (quantity < 0) {
+      setQuantity(previous);
+      return;
+    }
+    if (quantity === 0) {
+      onRemove(item);
+      return;
+    }
+    setQuantity(quantity);
+    try {
+      await onUpdate(item, quantity);
+    } catch (error) {
+      setQuantity(previous);
+    }
+  };
 
   return (
     <article className="flex flex-col gap-4 rounded-md border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
@@ -61,19 +79,30 @@ function CartItemCard({
         <div className="flex items-center rounded-md border border-slate-200">
           <button
             type="button"
-            onClick={() => onDecrease(item)}
+            onClick={() => handleUpdate(item.quantity - 1)}
             disabled={isUpdating}
             className="inline-flex h-9 w-9 items-center justify-center text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300"
             aria-label="Giảm số lượng"
           >
             <Minus className="h-4 w-4" />
           </button>
-          <span className="min-w-10 text-center text-sm font-medium text-slate-950">
-            {item.quantity}
-          </span>
+          <input
+            className="w-16 text-center"
+            type="number"
+            min={1}
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value) || 1)}
+            onBlur={() => handleUpdate(quantity)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleUpdate(quantity);
+                e.currentTarget.blur();
+              }
+            }}
+          />
           <button
             type="button"
-            onClick={() => onIncrease(item)}
+            onClick={() => handleUpdate(item.quantity + 1)}
             disabled={isUpdating}
             className="inline-flex h-9 w-9 items-center justify-center text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300"
             aria-label="Tăng số lượng"
