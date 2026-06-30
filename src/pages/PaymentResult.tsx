@@ -331,10 +331,10 @@ export function PaymentResult() {
 
   // ── Navigation handlers ─────────────────────────────────────────────────────
 
-  const goToOrderDetail = () => order && navigate(`/orders/${order.id}`);
+  const goToOrderDetail = () => navigate(`/orders/history`);
   const goToHome = () => navigate("/");
   const goToCart = () => navigate("/cart");
-  const goToRetryPayment = () => order && navigate(`/checkout?retryOrderId=${order.id}`);
+//   const goToRetryPayment = () => order && navigate(`/checkout?retryOrderId=${order.id}`);
 
   // ── Card shell ───────────────────────────────────────────────────────────────
 
@@ -509,13 +509,13 @@ export function PaymentResult() {
               >
                 Quay về giỏ hàng
               </button>
-              <button
+              {/* <button
                 type="button"
                 onClick={goToRetryPayment}
                 className="order-1 flex-1 rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700 sm:order-2"
               >
                 Thanh toán lại
-              </button>
+              </button> */}
             </div>
           </>
         )}

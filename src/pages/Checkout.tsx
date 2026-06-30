@@ -20,11 +20,13 @@ interface CheckoutOrderItem {
 
 interface CheckoutOrder {
   items?: CheckoutOrderItem[];
+  paymentUrl?: string;
 }
 
 interface CheckoutResponse {
   order?: CheckoutOrder;
   data?: CheckoutOrder;
+  paymentUrl?: string;
 }
 
 interface CartResponse {
@@ -351,6 +353,12 @@ function Checkout() {
         paymentMethod: method,
         voucherCode: appliedVoucherCode || undefined,
       });
+      const paymentUrl = response.data.paymentUrl;
+
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+        return;
+      }
       const order = response.data.order ?? response.data.data;
       const orderItems = order?.items ?? [];
 

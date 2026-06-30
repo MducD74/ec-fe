@@ -226,7 +226,7 @@ function OrderHistory() {
                           void handleCompleteOrder(order.id);
                         }}
                       >
-                        {isCompleting ? "Đang xác nhận..." : "Xác nhận đã nhận hàng"}
+                        {isCompleting ? "Đang xác nhận..." : "Xác nhận đã nhận hàng và thanh toán"}
                       </button>
                     )}
                     <ChevronDown
