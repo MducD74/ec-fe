@@ -262,10 +262,11 @@ export function PaymentResult() {
     }
 
     try {
-      const data = await getOrderById(transactionRef);
+      const res = await getOrderById(transactionRef);
+      const data = res.data;
       if (!isMountedRef.current) return;
 
-      setOrder(data.data);
+      setOrder(data);
       setErrorMessage(null);
 
       if (data.paymentStatus === "PAID") {
