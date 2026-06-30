@@ -102,6 +102,7 @@ function Checkout() {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [voucherError, setVoucherError] = useState<string | null>(null);
   const voucherRequestId = useRef(0);
+  const [method, setMethod] = useState<"COD" | "VNPAY">("COD");
 
   const subtotal = useMemo(
     () =>
@@ -347,7 +348,7 @@ function Checkout() {
     try {
       const response = await apiClient.post<CheckoutResponse>("/orders/checkout", {
         address: shippingAddress,
-        paymentMethod: "COD",
+        paymentMethod: method,
         voucherCode: appliedVoucherCode || undefined,
       });
       const order = response.data.order ?? response.data.data;
@@ -432,7 +433,8 @@ function Checkout() {
                 type="radio"
                 name="paymentMethod"
                 value="COD"
-                checked
+                checked={method === "COD"}
+                onChange={() => setMethod("COD")}
                 readOnly
                 className="mt-1 h-4 w-4 accent-slate-950"
               />
@@ -445,11 +447,13 @@ function Checkout() {
                 </span>
               </span>
             </label>
-            <label className="flex cursor-not-allowed items-start gap-3 rounded-md border border-slate-200 bg-white p-4 opacity-50">
+            <label className="flex items-start gap-3 rounded-md border border-gray-300 bg-slate-50 p-4">
               <input
                 type="radio"
                 name="paymentMethod"
                 value="VNPAY"
+                checked={method === "VNPAY"}
+                onChange={() => setMethod("VNPAY")}
                 className="mt-1 h-4 w-4 accent-slate-950"
               />
               <span>
