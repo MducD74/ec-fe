@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import OrderHistory from "./pages/OrderHistory";
 import ProductDetail from "./pages/ProductDetail";
 import Register from "./pages/Register";
+import PaymentResult from "./pages/PaymentResult";
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/payment/result" element={<Dashboard />} />
+            <Route path="/payment/result" element={<PaymentResult />} />
             {/* <Route path="/admin" element={<AdminDashboard />} /> */}
             <Route path="/orders/history" element={<OrderHistory />} />
           </Routes>
