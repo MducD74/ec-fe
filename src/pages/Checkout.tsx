@@ -449,15 +449,14 @@ function Checkout() {
               <input
                 type="radio"
                 name="paymentMethod"
-                value="ONLINE"
-                disabled
+                value="VNPAY"
                 className="mt-1 h-4 w-4 accent-slate-950"
               />
               <span>
                 <span className="block text-sm font-semibold text-slate-950">
                   Thanh toán trực tuyến
                 </span>
-                <span className="mt-1 block text-sm text-slate-600">Tạm thời chưa khả dụng.</span>
+                <span className="mt-1 block text-sm text-slate-600">Thanh toán trực tuyến qua VNPAY.</span>
               </span>
             </label>
           </div>
