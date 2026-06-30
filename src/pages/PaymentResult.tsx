@@ -52,6 +52,7 @@ function formatCurrencyVnd(amount: number): string {
 }
 
 function formatDateTimeVi(isoDate: string): string {
+    if (!isoDate) return "";
   return new Intl.DateTimeFormat("vi-VN", {
     hour: "2-digit",
     minute: "2-digit",
@@ -223,8 +224,8 @@ function StatusIconRing({
 
 // ─── API call ─────────────────────────────────────────────────────────────────
 
-async function getOrderById(orderId: string): Promise<OrderDto> {
-  const response = await apiClient.get<OrderDto>(`/orders/${orderId}`);
+async function getOrderById(orderId: string) {
+  const response = await apiClient.get(`/orders/${orderId}`);
   return response.data;
 }
 
@@ -264,7 +265,7 @@ export function PaymentResult() {
       const data = await getOrderById(transactionRef);
       if (!isMountedRef.current) return;
 
-      setOrder(data);
+      setOrder(data.data);
       setErrorMessage(null);
 
       if (data.paymentStatus === "PAID") {
@@ -392,10 +393,6 @@ export function PaymentResult() {
               <p className="mt-2 text-[15px] leading-relaxed text-slate-500">
                 Hệ thống đang xác nhận giao dịch với VNPay. Vui lòng đợi trong giây lát.
               </p>
-              <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
-                Tự động làm mới mỗi 2 giây
-              </div>
             </div>
 
             {order && (
@@ -531,21 +528,24 @@ export function PaymentResult() {
 function OrderDetailRows({ order }: { order: OrderDto }) {
   const orderStatusBadge = getOrderStatusBadge(order.status);
   const paymentStatusBadge = getPaymentStatusBadge(order.paymentStatus);
-
   return (
     <>
-      <Row label="Mã đơn hàng">#{order.id.slice(-8).toUpperCase()}</Row>
+      <Row label="Mã đơn hàng">#{order?.id}</Row>
       <Row label="Tổng tiền">{formatCurrencyVnd(order.total)}</Row>
       <Row label="Phương thức thanh toán">{getPaymentMethodLabel(order.paymentMethod)}</Row>
       <Row label="Thời gian đặt hàng">{formatDateTimeVi(order.createdAt)}</Row>
 
       <div className="flex items-center justify-between gap-3 py-2.5">
         <span className="text-sm text-slate-500">Trạng thái thanh toán</span>
-        <StatusBadge label={paymentStatusBadge.label} tone={paymentStatusBadge.tone} />
+        {paymentStatusBadge && (
+          <StatusBadge label={paymentStatusBadge.label} tone={paymentStatusBadge.tone} />
+        )}
       </div>
       <div className="flex items-center justify-between gap-3 py-2.5">
         <span className="text-sm text-slate-500">Trạng thái đơn hàng</span>
-        <StatusBadge label={orderStatusBadge.label} tone={orderStatusBadge.tone} />
+        {orderStatusBadge && (
+          <StatusBadge label={orderStatusBadge.label} tone={orderStatusBadge.tone} />
+        )}
       </div>
     </>
   );
