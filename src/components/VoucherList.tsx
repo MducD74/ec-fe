@@ -60,15 +60,18 @@ function VoucherList({ vouchers, copiedCode, onCopyCode }: VoucherListProps) {
 
   return (
     <section>
-      <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+      <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
             Ưu đãi hôm nay
           </p>
-          <h2 className="mt-2 text-2xl font-bold tracking-normal text-slate-950">
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
             Khuyến mãi độc quyền
           </h2>
         </div>
+        <p className="max-w-xs text-sm leading-6 text-slate-500 sm:text-right">
+          Sao chép mã và áp dụng ngay khi thanh toán.
+        </p>
       </div>
 
       <div className="hide-scrollbar flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
@@ -124,6 +127,3 @@ function VoucherList({ vouchers, copiedCode, onCopyCode }: VoucherListProps) {
 }
 
 export default VoucherList;
-
-
-

@@ -54,6 +54,7 @@ function Catalog() {
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [isRecommendLoading, setIsRecommendLoading] = useState(true);
   const [productsError, setProductsError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -122,6 +123,7 @@ function Catalog() {
           limit,
           categoryId: selectedCategoryId,
           brandId: selectedBrandId,
+          search
         });
 
         if (!isMounted) {
@@ -147,7 +149,7 @@ function Catalog() {
     return () => {
       isMounted = false;
     };
-  }, [selectedCategoryId, selectedBrandId, currentPage, limit]);
+  }, [selectedCategoryId, selectedBrandId, currentPage, limit, search]);
 
   const selectCategory = (categoryId: number | null) => {
     setSelectedCategoryId(categoryId);
@@ -162,6 +164,11 @@ function Catalog() {
   const clearFilters = () => {
     setSelectedCategoryId(null);
     setSelectedBrandId(null);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
     setCurrentPage(1);
   };
 
@@ -279,15 +286,25 @@ function Catalog() {
                 Trang {currentPage} với {limit} sản phẩm mỗi trang
               </p>
             </div>
-            {(selectedCategoryId || selectedBrandId) && (
-              <button
-                type="button"
-                className="inline-flex h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:border-primary-500 hover:text-primary-600"
-                onClick={clearFilters}
-              >
-                Xóa bộ lọc
-              </button>
-            )}
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+              <input
+                type="text"
+                placeholder="Tìm kiếm sản phẩm..."
+                value={search}
+                onChange={handleSearchChange}
+                className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none transition focus:border-primary-500 sm:w-72"
+              />
+
+              {(selectedCategoryId || selectedBrandId) && (
+                <button
+                  type="button"
+                  className="inline-flex h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:border-primary-500 hover:text-primary-600"
+                  onClick={clearFilters}
+                >
+                  Xóa bộ lọc
+                </button>
+              )}
+            </div>
           </div>
 
           {isLoadingProducts && (
@@ -333,6 +350,3 @@ function Catalog() {
 }
 
 export default Catalog;
-
-
-

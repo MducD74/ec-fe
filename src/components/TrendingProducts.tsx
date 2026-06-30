@@ -37,16 +37,16 @@ function TrendingProducts() {
 
   return (
     <section>
-      <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+      <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
             Đang thịnh hành
           </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-normal text-slate-950">
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
             Sản phẩm bán chạy nhất
           </h2>
         </div>
-        <p className="max-w-md text-sm leading-6 text-slate-500">
+        <p className="max-w-xs text-sm leading-6 text-slate-500 sm:text-right">
           Những lựa chọn được nhiều khách hàng yêu thích trong tuần này.
         </p>
       </div>
@@ -60,7 +60,7 @@ function TrendingProducts() {
       )}
 
       {!isLoading && error && (
-        <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-primary-700">
+        <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </p>
       )}
@@ -83,6 +83,3 @@ function TrendingProducts() {
 }
 
 export default TrendingProducts;
-
-
-

@@ -32,29 +32,27 @@ const services: ServiceItem[] = [
 
 function StoreServices() {
   return (
-    <section className="rounded-lg border border-slate-100 bg-white px-4 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)] sm:px-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {services.map((service) => {
-          const Icon = service.icon;
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {services.map((service) => {
+        const Icon = service.icon;
 
-          return (
-            <article key={service.title} className="flex gap-4 rounded-md p-3 transition-colors hover:bg-slate-50">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary-500 text-white">
-                <Icon className="h-5 w-5" />
-              </div>
-              <div>
-                <h2 className="text-sm font-semibold text-slate-950">{service.title}</h2>
-                <p className="mt-1 text-sm leading-6 text-slate-500">{service.description}</p>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </section>
+        return (
+          <article
+            key={service.title}
+            className="flex gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition-shadow hover:shadow-md"
+          >
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary-500 text-white">
+              <Icon className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-950">{service.title}</h3>
+              <p className="mt-1 text-sm leading-6 text-slate-500">{service.description}</p>
+            </div>
+          </article>
+        );
+      })}
+    </div>
   );
 }
 
 export default StoreServices;
-
-
-

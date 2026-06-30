@@ -55,15 +55,13 @@ function AiRecommendations() {
 
   return (
     <section>
-      <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
-            Mua sắm AI
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-normal text-slate-950">
-            ✨ Gợi ý riêng cho bạn
-          </h2>
-        </div>
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+          Gợi ý dành riêng cho bạn
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          Dựa trên lịch sử tìm kiếm và mua sắm của bạn.
+        </p>
       </div>
 
       {isLoading && (
@@ -98,6 +96,3 @@ function AiRecommendations() {
 }
 
 export default AiRecommendations;
-
-
-
