@@ -474,7 +474,7 @@ function Checkout() {
           </div>
         </div>
 
-        <div className="border-t border-slate-200 pt-5">
+        {/* <div className="border-t border-slate-200 pt-5">
           <h2 className="text-base font-semibold text-slate-950">Mã giảm giá</h2>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row">
             <input
@@ -502,7 +502,7 @@ function Checkout() {
             </button>
           </div>
           {voucherError && <p className="mt-2 text-sm text-primary-600">{voucherError}</p>}
-        </div>
+        </div> */}
 
         <div className="border-t border-slate-200 pt-5">
           <h2 className="text-base font-semibold text-slate-950">Tổng tiền</h2>
