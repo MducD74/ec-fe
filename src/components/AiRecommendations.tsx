@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ProductCard, { type Product } from "./ProductCard";
 import apiClient from "../lib/api-client";
+import { Sparkles } from "lucide-react";
 
 interface ProductsResponse {
   data?: Product[];

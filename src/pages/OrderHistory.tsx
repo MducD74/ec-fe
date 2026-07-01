@@ -120,6 +120,22 @@ function OrderHistory() {
     }
   };
 
+  const createPaymentLink = async (orderId: number) => {
+    setCompletingOrderId(orderId);
+
+    try {
+      const response = await apiClient.post(`/orders/create-payment-link/${orderId}`);
+      if (response.data.paymentUrl) {
+        window.location.href = response.data.paymentUrl;
+        return;
+      }
+    } catch {
+      toast.error("Không thể tạo thanh toán.");
+    } finally {
+      setCompletingOrderId(null);
+    }
+  };
+
   return (
     <section className="py-8">
       <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -175,6 +191,7 @@ function OrderHistory() {
           {orders.map((order) => {
             const isExpanded = expandedOrderId === order.id;
             const canComplete = order.status === "PROCESSING";
+            const canRePay = order.paymentStatus !== "PAID" && order.paymentMethod === "VNPAY";
             const isCompleting = completingOrderId === order.id;
             const statusClass =
               statusClassByValue[order.status] ?? "bg-slate-50 text-slate-700 ring-slate-100";
@@ -211,12 +228,14 @@ function OrderHistory() {
                         {formatCurrency(order.total)}
                       </p>
                     </div>
-                    <span
+                    {!canComplete && !canRePay && (
+                      <span
                       className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-semibold ring-1 ring-inset ${statusClass}`}
                     >
                       {order.status}
                     </span>
-                    {canComplete && (
+                    )}
+                    {canComplete && !canRePay && (
                       <button
                         type="button"
                         className="rounded-xl bg-primary-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-slate-400"
@@ -227,6 +246,19 @@ function OrderHistory() {
                         }}
                       >
                         {isCompleting ? "Đang xác nhận..." : "Xác nhận đã nhận hàng và thanh toán"}
+                      </button>
+                    )}
+                    {canRePay && (
+                      <button
+                        type="button"
+                        className="rounded-xl bg-primary-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-slate-400"
+                        disabled={isCompleting}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          void createPaymentLink(order.id);
+                        }}
+                      >
+                        {isCompleting ? "Đang tạo thanh toán..." : "Thanh toán lại với VNPAY"}
                       </button>
                     )}
                     <ChevronDown
