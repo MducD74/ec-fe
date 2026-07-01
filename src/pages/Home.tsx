@@ -75,26 +75,7 @@ function Home() {
       </section>
 
       {/* ─── AI RECOMMENDATIONS — gradient signature section  */}
-      <section className="relative overflow-hidden">
-        {/* Gradient background */}
-        <div className="absolute inset-0 bg-[linear-gradient(160deg,#f0f4ff_0%,#f8f6ff_40%,#fdf4ff_100%)]" />
-        {/* Decorative blobs */}
-        <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-violet-100/60 blur-3xl" />
-        <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-indigo-100/50 blur-3xl" />
-
-        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-          {/* Section eyebrow */}
-          <div className="mb-8 flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-100">
-              <Sparkles className="h-4 w-4 text-violet-600" />
-            </span>
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-600">
-              Được tạo riêng cho bạn
-            </span>
-          </div>
-          <AiRecommendations />
-        </div>
-      </section>
+      <AiRecommendations />
 
       {/* ─── VOUCHERS — white section ────────────────────── */}
       {vouchers.length > 0 && (
